@@ -445,6 +445,8 @@ Stage 1 all empty → pass. Stage 2 is advisory (high false-positive rate). Stag
 
 This skill's §1–§10 are *convention rules* (when to use what, formatting policy). The *catalog of syntax* that Obsidian adds on top of CommonMark + GFM lives in a separate reference file:
 
+`ref/obsidian-plugin-essentials.md` covers the plugin ecosystem most relevant for this skill — three-tier categorization (Required: Make.md / Dataview; Recommended: Templater / Periodic Notes / Linter / Tasks / Tag Wrangler; Compatible: Excalidraw / Citations / Hover Editor / etc.) with first-time-user-friendly "why install" rationale, a 4-stage progressive rollout plan, and an explicit overlap analysis between Linter and §10 self-check (they complement rather than replace each other — Linter for broad GFM coverage, this skill's grep for CJK-specific emphasis breakage).
+
 `ref/obsidian-syntax-reference.md` covers:
 - Wikilinks (`[[Note]]`, `[[Note|Display]]`, `[[Note#Heading]]`, `[[Note#^block]]`, same-note links) + disambiguation rules
 - Block IDs (`^id`) — paragraph / list-item / quote-block placement

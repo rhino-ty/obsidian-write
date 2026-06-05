@@ -76,10 +76,14 @@ obsidian-write/
 │   │                                       myth-busting (smart quotes, live-preview, `_..._`)
 │   ├── cjk-language-extra-checks.md      # Korean/Japanese/Chinese-specific procedure —
 │   │                                       when to run, what to check, why CJK is different
-│   └── obsidian-syntax-reference.md      # Obsidian Flavored Markdown catalog —
-│                                           wikilinks, block IDs, embeds, callouts (full type list),
-│                                           properties, comments, highlight, math, mermaid,
-│                                           footnotes, task list extensions, HTML subset
+│   ├── obsidian-syntax-reference.md      # Obsidian Flavored Markdown catalog —
+│   │                                       wikilinks, block IDs, embeds, callouts (full type list),
+│   │                                       properties, comments, highlight, math, mermaid,
+│   │                                       footnotes, task list extensions, HTML subset
+│   └── obsidian-plugin-essentials.md     # Plugin guide for first-time users — Required /
+│                                           Recommended / Compatible tiers with "why install"
+│                                           rationale, 4-stage rollout plan, Linter ↔ §10
+│                                           overlap analysis
 └── examples/
     ├── example-academic-note.md          # Course / study note (e.g., university lecture)
     ├── example-essay.md                  # Reflective essay (e.g., self-analysis)
@@ -156,6 +160,29 @@ The skill triggers in **8 languages**. Speak in your own language.
 - Authoring a lecture note itself — use a domain-specific lecture-note skill; it delegates here
 - Logseq / Notion / Bear / plain markdown ecosystems (different convention sets)
 - "Convert my note to a blog post" — use [review-myblog-converter](https://github.com/rhino-ty/review-myblog-converter)
+
+## Plugin compatibility matrix
+
+Obsidian itself is minimal — most of this skill's value materializes once you've installed a few specific plugins. The matrix below sorts them into three tiers; full installation order, "why install each one", and a 4-stage rollout plan for first-time users are in [`ref/obsidian-plugin-essentials.md`](ref/obsidian-plugin-essentials.md).
+
+| Plugin | Tier | Why install | Skill section affected |
+|---|---|---|---|
+| **Make.md** | 🔴 Required | Renders `sticker: emoji//{hex}` as actual icons; folder spec note UI | SKILL.md §2 + folder-spec example |
+| **Dataview** | 🔴 Required | Makes frontmatter properties queryable; powers in-vault dashboards | SKILL.md §5 typed properties |
+| **Templater** | 🟡 Recommended | Automates the `## Minimal template` blocks in `examples/`. Two keystrokes vs. two minutes per new note | All `examples/` |
+| **Periodic Notes** | 🟡 Recommended | Auto-creates daily / weekly / monthly notes by date; enables sustainable journaling | `example-daily-note.md` |
+| **Linter** | 🟡 Recommended | Auto-formats markdown on save. **Complements** §10 self-check — Linter is broad GFM coverage, this skill is CJK emphasis-specific. Run both, not one or the other | §10 (see plugin ref for full comparison table) |
+| **Tasks** | 🟡 Recommended | Surfaces `- [ ]` checkboxes across the vault as queryable task lists with due-date/priority | `syntax-reference §12` |
+| **Tag Wrangler** | 🟡 Recommended | Bulk-rename and merge tags. Without it, §7's "quarterly pruning" is impractical and the 5-axis tag model decays | §7 operating principles |
+| **Excalidraw** | 🟢 Compatible | Hand-drawn unstructured diagrams (where Mermaid feels too rigid) | Independent |
+| **Citations** | 🟢 Compatible | Zotero integration for academic literature notes | `example-tech-reference.md` pattern |
+| **Hover Editor** | 🟢 Compatible | Inline preview + edit of wikilinked notes — fastens MOC traversal | `example-moc.md` workflow |
+| **MetaEdit / Metadata Menu** | 🟢 Compatible | UI for editing frontmatter properties without typing YAML | §5 typed properties |
+| **Smart Connections** | 🟢 Compatible | AI-suggested related notes via embedding similarity | Discovery side of Zettelkasten |
+| **Advanced Tables** | 🟢 Compatible | Spreadsheet-like editing of markdown tables | §1.5 comparative analysis tables |
+| **Outliner** | 🟢 Compatible | Logseq-style outline manipulation | `example-essay.md` outlines |
+
+**Don't install everything on day 1.** The plugin ref documents a 4-stage rollout — Day 1 (Required), Week 2 (Templater + Periodic Notes), Month 2 (Tag Wrangler + Linter), then add others only when you feel the specific friction each one addresses. See [`ref/obsidian-plugin-essentials.md`](ref/obsidian-plugin-essentials.md) for the rationale of each plugin and a "first 5 minutes" setup for the Required and Recommended tiers.
 
 ## Model recommendation
 
