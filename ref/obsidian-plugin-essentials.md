@@ -282,12 +282,27 @@ Linter and this skill's §10 self-check **overlap, but neither fully replaces th
 
 **Install + first 5 minutes**:
 1. Install → Enable
-2. Settings → Linter → enable "Run linter on save" if you want auto-fix
-3. Pick rules — recommended starter set:
-   - **Headings**: "No empty lines around headings", "Empty line around headings", "Headings must start at heading level X" (set X=2 to enforce our h2-start convention)
-   - **YAML**: "Format YAML array", "Sort YAML keys"
-   - **Spacing**: "Trailing spaces", "Remove multiple consecutive blank lines"
-4. Important: **disable** any rule that conflicts with your existing notes until you're ready to bulk-fix them (e.g., "Strict line breaks" can rewrite a lot)
+2. Settings → Linter → leave "Run linter on save" **OFF** initially (avoids surprise mass-edits of existing notes)
+3. Pick rules — Linter organizes them in **categories** (Headings / YAML / Footnote / Content / Spacing / Paste / General). Recommended starter set with **exact rule names** as they appear in the plugin:
+
+   | Category | Rule | Setting | Why |
+   |---|---|---|---|
+   | **Headings** | `File Name Heading` | **OFF** | Inline Title already shows the filename; auto-inserting h1 violates §3 |
+   | Headings | `Header Increment` | **ON** | Catches `##` → `####` jumps (skipping h3) |
+   | Headings | `Headings Start Line` | **ON** | Strips preceding whitespace so heading is recognized |
+   | Headings | `Capitalize Headings` | **OFF** | Forces English headers to capitalize — fights the natural lowercase-prose-headers this skill uses (`## what this note is`) |
+   | Headings | `Remove Trailing Punctuation in Heading` | **OFF** | Korean question-headers (`## 왜 그런가?`) legitimately end with `?` |
+   | **YAML** | `Format YAML Array` | **ON** | `tags: [a, b]` → one-per-line form (better git diffs) |
+   | YAML | `YAML Key Sort` | **OFF** | Existing notes have intentional frontmatter order (sticker → tags → created); preserve |
+   | **Spacing** | `Trailing Spaces` | **ON** | Strip end-of-line whitespace |
+   | Spacing | `Consecutive Blank Lines` | **ON** | Collapse 3+ blank lines → 2 (compatible with §4 hr policy) |
+   | Spacing | `Heading Blank Lines` (also seen as `Empty Line Around Headings`) | **ON** | Enforce blank line above + below every heading |
+   | Spacing | `Line Break at Document End` | **ON** | Adds trailing newline; harmless and standard |
+   | **Content** | `Convert Spaces to Tabs` | **OFF** initially | §5 aligns with this rule, but it does mass-edits of existing notes — turn ON only after a manual sweep |
+
+4. Run a manual test before enabling on-save: command palette → "Linter: Lint current file" on a deliberate-issue note. Confirm safe behavior, then enable "Run linter on save" if comfortable.
+
+> **Strict line breaks** is NOT a Linter rule — it's an Obsidian core setting (`Settings → Editor → Strict line breaks`). Leave it **OFF** so soft line breaks work as expected. New users sometimes search Linter for it and don't find it.
 
 **Verify the install worked**:
 1. Settings → Community plugins → confirm "Linter" toggle is ON
