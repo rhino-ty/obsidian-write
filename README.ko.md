@@ -88,9 +88,14 @@ obsidian-write/
 │   ├── para-classification.md            # PARA 방법론 폴더 구조 + 폴더 스펙 노트 + 매체 중심
 │   │                                       Resource 레이아웃 + 결정 룰 + 마이그레이션
 │   │                                       (SKILL.md §8 분리 ref)
-│   └── delegation-for-skill-authors.md   # 다른 옵시디언 작성 스킬 개발자용 — 감지 시그널,
-│                                           위임 가능/불가능 영역, 표준 위임 흐름, 흔한 실수,
-│                                           버전 안정성 (SKILL.md §9 분리 ref)
+│   ├── delegation-for-skill-authors.md   # 다른 옵시디언 작성 스킬 개발자용 — 감지 시그널,
+│   │                                       위임 가능/불가능 영역, 표준 위임 흐름, 흔한 실수,
+│   │                                       버전 안정성 (SKILL.md §9 분리 ref)
+│   └── agent-context-files.md            # CLAUDE.md / AGENTS.md / .cursorrules /
+│                                           .codex.md / .windsurfrules 작성 — agent context
+│                                           포맷 카탈로그, 옵시디언 vault용 8섹션 템플릿,
+│                                           어떤 §1~§10 컨벤션 적용되는지, 단일/다중 파일
+│                                           전략 + symlink 방법 (SKILL.md §12 분리 ref)
 ├── examples/
 │   ├── example-academic-note.md          # 학습/강의 노트 (예: 컴퓨터 네트워크 강의)
 │   ├── example-essay.md                  # 수필/자기 분석 노트

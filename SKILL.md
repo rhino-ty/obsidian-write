@@ -394,7 +394,24 @@ This skill's §1–§10 are *convention rules* (when to use what, formatting pol
 
 Verified against Obsidian 1.5+. Use this when you need to look up the *syntax* itself; this SKILL.md handles the *conventions* around when to use it.
 
-## 12. Related Skills
+## 12. Agent Context Files (CLAUDE.md / AGENTS.md / etc., separate reference)
+
+This skill also writes and maintains the markdown files that AI coding agents read to understand a project — `CLAUDE.md` (Claude Code), `AGENTS.md` (emerging cross-agent standard), `AGENT.md`, `.cursorrules` (Cursor), `.codex.md` (Codex CLI), `.windsurfrules` (Windsurf), and the equivalent files for future agents. For an Obsidian vault, these live at vault root and tell the agent: who maintains this vault, what organizing system is in use, what skills are installed, which plugins are active, what writing voice to adopt.
+
+When this skill writes or edits an agent context file, it applies a **tailored subset** of the conventions in §1–§7 — heading depth, hr, indent, emphasis-flanking, and §10 self-check all apply; sticker frontmatter and 5-axis tags and PARA path do *not* (agent context files aren't classified vault notes). Numbered headers are acceptable here for the same reason they're acceptable in this skill's own SKILL.md / ref docs (see §3 exception clause) — explicit section numbers serve agents reading the file.
+
+`ref/agent-context-files.md` covers:
+- The catalog of agent context formats (CLAUDE.md / AGENTS.md / .cursorrules / .codex.md / .windsurfrules) — which agent reads which, scope inheritance, format expectations
+- "Why agent context files matter" specifically for Obsidian vault owners (not codebases)
+- A structured 8-section template for vault-flavored agent context (Owner / Structure / Active projects / Conventions / Skills / Plugins / Voice / External)
+- Convention application matrix — which §1–§10 rules apply to agent context files vs. which don't
+- "Single file or many?" trade-offs (CLAUDE.md only / AGENTS.md primary / per-agent files) + symlink strategy
+- Maintenance cadence (quarterly review, on skill install/uninstall, on structural changes)
+- A worked CLAUDE.md / AGENTS.md skeleton you can adapt
+
+If you maintain an Obsidian vault and want any agent walking into it to be calibrated within 30 seconds, this is the file format that does that.
+
+## 13. Related Skills
 
 External Obsidian writing skills that delegate to this one:
 

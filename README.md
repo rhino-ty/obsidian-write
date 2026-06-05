@@ -87,10 +87,16 @@ obsidian-write/
 │   ├── para-classification.md            # PARA method folder structure + folder spec note +
 │   │                                       medium-first Resource layout + decision rules +
 │   │                                       migration tips (SKILL.md §8 separate reference)
-│   └── delegation-for-skill-authors.md   # For other Obsidian writing skill authors —
-│                                           detection signal, delegatable / non-delegatable
-│                                           contract, standard delegation flow, common mistakes,
-│                                           versioning stability (SKILL.md §9 separate reference)
+│   ├── delegation-for-skill-authors.md   # For other Obsidian writing skill authors —
+│   │                                       detection signal, delegatable / non-delegatable
+│   │                                       contract, standard delegation flow, common mistakes,
+│   │                                       versioning stability (SKILL.md §9 separate reference)
+│   └── agent-context-files.md            # Writing CLAUDE.md / AGENTS.md / .cursorrules /
+│                                           .codex.md / .windsurfrules for Obsidian vaults —
+│                                           agent context format catalog, 8-section vault-flavored
+│                                           template, which §1-§10 conventions apply,
+│                                           single-vs-many-file trade-offs + symlink strategy
+│                                           (SKILL.md §12 separate reference)
 └── examples/
     ├── example-academic-note.md          # Course / study note (e.g., university lecture)
     ├── example-essay.md                  # Reflective essay (e.g., self-analysis)
