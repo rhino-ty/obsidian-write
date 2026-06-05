@@ -1,76 +1,174 @@
 # obsidian-write
 
-> 옵시디언 vault 노트 작성·편집 시 적용할 보편 컨벤션 SSoT(Single Source of Truth) skill.
-> Heading(h2~h4) · 구분선(`---` h2 사이) · 들여쓰기(탭) · **CommonMark flanking 강조 깨짐 룰**(한국어 노트 필수) · sticker frontmatter · 5축 태그 모델 · PARA 분류.
+> Single Source of Truth (SSoT) skill for writing and editing Obsidian vault notes.
+> Heading (h2~h4) · horizontal-rule placement · indentation · **CommonMark flanking emphasis-breakage guard (CJK-optimized)** · sticker frontmatter · 5-axis tag model · PARA classification · post-write grep self-check.
 
 [![Made with](https://img.shields.io/badge/Made%20with-Claude%20Skills-blueviolet)](https://docs.claude.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Korean optimized](https://img.shields.io/badge/Korean-optimized-blue)](#왜-한국어-사용자에게-특히-유용한가)
+[![CJK optimized](https://img.shields.io/badge/CJK-optimized-blue)](#why-cjk-authors-care-the-most)
+[![Languages](https://img.shields.io/badge/Triggers-8%20languages-blueviolet)](#trigger-keywords)
 
-## 한 줄 요약
+---
 
-옵시디언 노트 작성할 때마다 반복적으로 떠오르는 규칙(Heading 깊이, 강조 깨짐, 태그 정책 등)을 한 곳에 모은 *권위 문서*. 다른 옵시디언 작성 스킬이 vault에서 이 파일을 발견하면 컨벤션을 이쪽에 위임한다.
+## What this skill does
 
-## 누구에게 필요한가
+Every Obsidian note-author re-applies the same set of micro-decisions on every file: which heading level to start at, where to place horizontal rules, how to write tags, how to keep bold from breaking. This skill packages those decisions in one authoritative place so:
 
-- **한국어로 옵시디언 노트를 쓰는 사용자** — 한국어 조사(`이다`, `의`, `과`) 때문에 `**볼드**`가 영어보다 훨씬 자주 깨지는 문제를 마스터 룰 + 5종 깨짐 패턴 + 안전 수정 패턴 + grep self-check로 해결
-- **여러 작성 스킬을 vault에 두는 사용자** — polymedia-review-skill(리뷰)·강의 노트 스킬·미래의 옵시디언 작성 스킬이 모두 이 한 곳을 참조하도록 위임 인터페이스 제공
-- **PARA 방법론 + 5축 태그 + Make.md 이모지 패턴 채택자** — 검증된 컨벤션 묶음
+1. **You stop re-deciding.** Open the file, follow the conventions, run the self-check, save.
+2. **Other writing skills delegate to it.** Review-note skills, lecture-note skills, future writing skills — all defer convention authority here when they detect the vault signal `.claude/skills/obsidian-write/SKILL.md`.
+3. **CJK authors get a real fix for emphasis breakage**, not just "be careful with bold."
 
-## 채택 옵션 (코어 vs 권장 vs 선택)
+It is **opinionated but layered** — Core conventions every Obsidian user benefits from, Recommended layers for specific setups (Make.md, CJK), Optional for personal operational policy (PARA, 5-axis tags).
 
-| 분류 | 항목 | 적용 조건 |
-|---|---|---|
-| 코어 | Heading · 구분선 · 들여쓰기 · 강조 깨짐 룰 | 옵시디언이면 무조건 |
-| 권장 | sticker frontmatter | Make.md 또는 폴더 이모지 관리 시 |
-| 선택 | ADR 스타일 · 5축 태그 · PARA 분류 | 자기 운영 정책과 맞으면 |
+## Output language follows the user
 
-코어 4개만 채택해도 옵시디언 노트 렌더링 깨짐은 거의 0. 나머지는 *opinionated* — 한 명의 사용자가 자기 vault에서 검증한 패턴.
+This skill is **convention infrastructure**, not a content generator. The conventions are written in English so any audience can read them, but **the notes you produce follow the user's language**.
 
-## 왜 한국어 사용자에게 특히 유용한가
+- Korean request → Korean note (CJK emphasis-breakage procedure kicks in)
+- English request → English note
+- Japanese / Chinese → same as Korean (CJK procedure applies)
+- Mixed → dominant language drives, per-segment checks run as needed
 
-CommonMark flanking 규칙 — `**` 안쪽에 문장부호(`)`, `"`, `.` 등) + 바깥쪽에 단어문자가 있으면 강조가 죽는다. 영어는 단어 뒤 공백·구두점이라 잘 안 걸리지만, 한국어는 조사(`과`, `이다`, `의`)가 공백 없이 붙어서 *훨씬 자주* 깨진다.
+Never translate the user's content into English just because the conventions are in English.
 
-```
-❌ **활용(exploitation)**과   ← 한국어 학술 노트 최빈 케이스
-✅ **활용**(exploitation)과   ← 한글 용어만 볼드, 영문병기 바깥
-```
+## Why CJK authors care the most
 
-이 스킬은:
-- 마스터 룰 한 줄 + 깨지는 패턴 5종 + 안전 수정 패턴 카탈로그
-- 저장 후 자동 grep 4종(닫는 쪽·여는 쪽·h1·헤더 번호) — Stage 1만 깨끗하면 통과
-- false positive 광범 grep 2종 (검증 보조)
-
-## 트리거 예시
+CommonMark's flanking rule means `**bold**` breaks when punctuation sits *inside* the delimiters and a word character sits *outside* with no whitespace. In English this happens occasionally:
 
 ```
-- "이 노트 마크다운 검사해줘"
-- "강조 깨졌나 봐줘"
-- "옵시디언 컨벤션대로 정리"
-- "self-check 돌려"
-- 새 .md 파일 작성 (vault 안)
-- 다른 작성 스킬이 vault에서 노트를 만들 때 자동 위임
+❌ word**"text"**here       ← breaks
+✅ word "**text**" here
 ```
 
-## 외부 스킬과의 관계
+In Korean / Japanese / Chinese this happens **constantly**, because particles, postpositions, and joining characters attach to `**` without whitespace:
 
-| 스킬 | 영역 | 위임 관계 |
-|---|---|---|
-| [polymedia-review-skill](https://github.com/rhino-ty/polymedia-review-skill) | 리뷰 노트 (책·게임·영화·음악) | 노트 시스템 어댑터에서 이 스킬 시그널 감지 → 자동 위임 |
-| [review-myblog-converter](https://github.com/rhino-ty/review-myblog-converter) | 옵시디언 → 블로그 톤 변환 | 입력만 받아 변환, 직접 충돌 없음 |
+```
+❌ **활용(exploitation)**과     ← Korean closing-particle attaches to `)**`
+✅ **활용**(exploitation)과     ← keep only the Korean term bold; gloss outside
+```
 
-미래의 옵시디언 작성 스킬도 동일한 위임 인터페이스(`.claude/skills/obsidian-write/SKILL.md` 존재 감지)로 연결 가능.
+This skill:
+- Captures the master rule in one line + 6 breakage patterns + universal fix
+- Ships a CJK-specific extra procedure (`ref/cjk-language-extra-checks.md`)
+- Includes a post-write grep 4-pack that catches the high-confidence breakages
 
-## 설치
+## Core feature list
 
-Claude Code · Cursor · Codex 등 AI agent 환경의 스킬 디렉토리(`.claude/skills/` 또는 `~/.claude/skills/`)에 이 repo를 clone:
+- **Convention SSoT** — Heading depth · horizontal rule · indentation · emphasis · sticker · tags · PARA, all in one file
+- **Tiered adoption** — Core / Recommended / Optional; take what fits, ignore what doesn't
+- **CJK emphasis-breakage guard** — Master rule + 6 patterns + safe rewrites + grep 4-pack
+- **Delegation interface** — Vault signal lets other writing skills auto-defer (no manual coordination needed)
+- **Post-write self-check** — Stage 1 narrow grep (high confidence) + Stage 2 wide flanking grep (advisory) + Stage 3 hr placement
+- **Worked examples** — Four medium-typical Obsidian notes (academic, essay, guide, technical reference) you can clone
+- **Reference material** — Deep-dive on CommonMark flanking + per-parser behavior + CJK-specific procedure
+
+## Directory structure
+
+```
+obsidian-write/
+├── SKILL.md                              # 11-section convention SSoT + self-check
+├── README.md                             # this file
+├── LICENSE                               # MIT
+├── ref/
+│   ├── emphasis-breakage-deep-dive.md    # CommonMark flanking spec walkthrough +
+│   │                                       per-parser behavior + full risky-char catalog +
+│   │                                       myth-busting (smart quotes, live-preview, `_..._`)
+│   └── cjk-language-extra-checks.md      # Korean/Japanese/Chinese-specific procedure —
+│                                           when to run, what to check, why CJK is different
+└── examples/
+    ├── example-academic-note.md          # Course / study note (e.g., university lecture)
+    ├── example-essay.md                  # Reflective essay (e.g., self-analysis)
+    ├── example-guide.md                  # How-to / walkthrough (e.g., game / tooling guide)
+    └── example-tech-reference.md         # Analytical reference (e.g., framework deep-dive)
+```
+
+## Installation
 
 ```bash
-git clone https://github.com/rhino-ty/obsidian-write.git
+npx skills add rhino-ty/obsidian-write
 ```
 
-또는 vault 안 `.claude/skills/` 아래에 두고 git submodule로 관리.
+[vercel-labs/skills](https://github.com/vercel-labs/skills) CLI pulls the SKILL.md from this GitHub repo and installs it into Claude Code, Cursor, Codex, and other supported agents. Options:
 
-## 라이선스
+- `-g` / `--global` — install at user level (available across all your projects)
+- `-a <agent>` — install into a specific agent only (e.g., `claude-code`)
+- `--all` — auto-accept + install into every detected agent
 
-MIT. 자유롭게 채택·수정. 강조 깨짐 룰(SKILL.md §6)은 한국어 사용자에게 특히 가치 있음.
+> **Companion skills (recommended for full review/blog flow)**:
+> ```bash
+> npx skills add rhino-ty/polymedia-review-skill
+> npx skills add rhino-ty/review-myblog-converter
+> ```
+
+## Usage flow
+
+```
+User writes / edits a .md note in an Obsidian vault
+  ↓
+obsidian-write triggers (or is delegated to by another skill)
+  ↓
+Apply Core conventions (Heading § Horizontal-rule § Indentation § Emphasis)
+  ↓
+Apply Recommended where applicable (CJK procedure if Korean/Japanese/Chinese; sticker if Make.md)
+  ↓
+Apply Optional per user policy (PARA path, 5-axis tags, ADR-style writing)
+  ↓
+Write/Edit the file
+  ↓
+Post-write self-check (Stage 1 mandatory; Stage 2/3 advisory)
+  ↓
+Pass → report done.  Hits → fix per §6 patterns, re-run, then report.
+```
+
+## Trigger phrases (examples)
+
+- "Format this note according to Obsidian conventions"
+- "Did my bold break anywhere?"
+- "Run self-check on this file"
+- "Write a new note on \<topic\>" (within a vault)
+- Any other writing skill firing inside the vault — this skill is auto-delegated
+
+### Trigger keywords
+
+The skill triggers in **8 languages**. Speak in your own language.
+
+| Language | Keywords |
+|---|---|
+| 🇰🇷 한국어 | 옵시디언, 옵시디언 노트, 노트 작성, 강조 깨짐, 볼드 깨짐, 헤더 규칙, 태그 5축, sticker, 스티커, frontmatter, PARA, vault 컨벤션, self-check, 의사결정 기록, ADR |
+| 🇺🇸 English | obsidian, obsidian write, note convention, markdown convention, emphasis breakage, bold breakage, heading rule, tag axis, frontmatter sticker, vault convention, self-check, PARA, ADR |
+| 🇯🇵 日本語 | オブシディアン, ノート作成, マークダウン, 強調が壊れる, 太字が壊れる, 見出し, タグ, バルト規約, セルフチェック |
+| 🇨🇳 中文 | Obsidian, 笔记写作, 笔记规范, 强调失效, 加粗失效, 标题, 标签, Vault 规范, 自查 |
+| 🇪🇸 Español | obsidian, nota, convención de notas, énfasis roto, encabezado, etiqueta |
+| 🇫🇷 Français | obsidienne, note, convention, gras cassé, en-tête, étiquette |
+| 🇩🇪 Deutsch | obsidian, notiz, konvention, hervorhebung gebrochen, überschrift, tag |
+| 🇮🇹 Italiano | obsidian, nota, convenzione, grassetto rotto, intestazione, etichetta |
+
+### Does **not** trigger for
+
+- Plain markdown outside an Obsidian vault (this skill is vault-specific)
+- Interactive visualizations / `dataviewjs` widgets (use a visualization-focused skill)
+- Authoring a review note itself — use [polymedia-review-skill](https://github.com/rhino-ty/polymedia-review-skill); it delegates to this skill for format
+- Authoring a lecture note itself — use a domain-specific lecture-note skill; it delegates here
+- Logseq / Notion / Bear / plain markdown ecosystems (different convention sets)
+- "Convert my note to a blog post" — use [review-myblog-converter](https://github.com/rhino-ty/review-myblog-converter)
+
+## Model recommendation
+
+This skill is mostly *rule application + grep*, so it's tolerant of lighter models. But it includes judgment calls (when does a Stage 2 hit count as a real break? which axis does a tag fall under?) that benefit from stronger reasoning when the note is complex.
+
+- ✅ Strong: Claude Opus / Sonnet 4.6+ · Gemini 2.5 Pro · GPT-o3 — for complex notes, ambiguous tag axis decisions, CJK + Latin mixed segments
+- ✅ Acceptable: Claude Haiku 4.5+ · GPT-4o-mini — for simple notes and pure mechanical self-check
+- ❌ Avoid: heavily quantized local models that mis-handle Unicode regex
+
+## License
+
+MIT. See [LICENSE](LICENSE).
+
+## Credits
+
+- **CommonMark spec** — the flanking rule that this skill ultimately codifies
+- **Niklas Luhmann's Zettelkasten** — the "tags as the weakest connector" intuition behind the 5-axis model (§7)
+- **Tiago Forte — PARA Method** — the optional folder classification (§8)
+- **Andy Hunt & David Thomas — *The Pragmatic Programmer*** — the ADR-style decision logging spirit (§1)
+- **Make.md plugin** — the `sticker: emoji//{hex}` frontmatter convention (§2)
+- **Companion skills** — [polymedia-review-skill](https://github.com/rhino-ty/polymedia-review-skill) · [review-myblog-converter](https://github.com/rhino-ty/review-myblog-converter)

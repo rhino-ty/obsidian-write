@@ -1,105 +1,152 @@
 ---
 name: obsidian-write
 description: >
-  옵시디언 vault 노트 작성·편집 시 적용할 보편 컨벤션 SSoT(Single Source of
-  Truth) 스킬. Heading(h2~h4 / h1 금지) + 구분선(`---`은 h2 사이에만) +
-  들여쓰기(탭) + 강조 깨짐 룰(CommonMark flanking — 한국어 노트 필수) +
-  sticker frontmatter + 5축 태그 모델(Status·Type·Domain·Topic·Context) +
-  PARA 분류 가이드. 작성 후 grep 4종 self-check로 저장 전 검증.
+  Single Source of Truth (SSoT) skill for writing and editing notes in an
+  Obsidian vault. Enforces a coherent set of conventions:
+  Heading (h2~h4, no h1) + horizontal rule (`---` between h2 sections only)
+  + indentation (Tab) + emphasis-breakage guard (CommonMark flanking rule)
+  + sticker frontmatter (Make.md compatible) + 5-axis tag model
+  (Status / Type / Domain / Topic / Context) + PARA classification.
+  Post-write grep self-check (4 patterns) catches the most common Obsidian
+  rendering breakage before you save.
 
-  Opinionated 스킬 — 한 명의 옵시디언 사용자가 자기 vault 일관성을 위해
-  정리한 컨벤션 묶음. 한국어 노트 작성자에게 특히 유용 (한국어 조사 때문에
-  영어보다 강조가 훨씬 자주 깨지는 문제 해결).
+  Opinionated skill — one Obsidian user codified the conventions they
+  validated in their own vault. Particularly valuable for CJK
+  (Korean / Japanese / Chinese) note authors: bold/italic markup is far more
+  fragile in those languages because particles, postpositions, and joining
+  characters attach to `**` without whitespace. This skill ships a dedicated
+  procedure for that, see `ref/cjk-language-extra-checks.md`.
 
-  다른 옵시디언 작성 스킬(polymedia-review-skill, knou-note-writer 등)이
-  vault에서 트리거됐을 때 이 스킬을 *우선 권위*로 위임받음. vault 시그널은
-  작업 디렉토리에 `.claude/skills/obsidian-write/SKILL.md` 존재 여부.
+  Other Obsidian writing skills (polymedia-review-skill, knou-note-writer,
+  future skills) can delegate convention authority to this skill when they
+  detect the vault signal `.claude/skills/obsidian-write/SKILL.md`. That
+  delegation interface is defined in §9.
+
+  Output language follows the user's language. If the user requests a note
+  in Korean, this skill produces a Korean note; English request, English
+  note; and so on. The conventions (heading, tags, emphasis) are
+  language-agnostic except where CJK-specific procedures kick in (§10).
 
   ALWAYS trigger when:
-  (1) 옵시디언 vault 안에서 새 .md 노트 작성
-  (2) 기존 .md 노트 편집 시 컨벤션 위반 가능성 있는 작업 (헤더 추가·강조 추가·태그 변경)
-  (3) 다른 작성 스킬이 트리거되면 그 결과물 검증 단계에서 자동 발동
-  (4) "노트 작성", "옵시디언 컨벤션", "강조 깨짐 검사", "self-check" 발화
+  (1) Creating a new .md note inside an Obsidian vault
+  (2) Editing an existing .md note in ways that may violate conventions
+      (heading depth, emphasis, tags, sticker, hr placement)
+  (3) Another writing skill triggers inside the vault — this skill is
+      auto-delegated as the convention authority for the output note
+  (4) User asks for "note convention check", "emphasis breakage check",
+      "self-check", "format validation"
 
-  Triggers (한국어):
-  옵시디언 노트, 노트 작성, 노트 편집, 마크다운 작성, 강조 깨짐, 볼드 깨짐,
-  헤더 규칙, 헤딩, 태그 5축, sticker, 스티커, frontmatter, PARA, vault 컨벤션,
-  볼트 컨벤션, self-check, 포맷 검증, 노트 검증, 의사결정 기록, ADR
+  Triggers (Korean):
+  옵시디언, 옵시디언 노트, 노트 작성, 노트 편집, 마크다운 작성, 강조 깨짐,
+  볼드 깨짐, 헤더 규칙, 헤딩, 태그 5축, sticker, 스티커, frontmatter,
+  PARA, vault 컨벤션, 볼트 컨벤션, self-check, 포맷 검증, 노트 검증,
+  의사결정 기록, ADR
 
   Triggers (English):
-  obsidian write, obsidian note, note convention, markdown convention,
-  emphasis breakage, bold breakage, heading rule, tag axis, frontmatter sticker,
-  vault convention, self-check, format validation, PARA method
+  obsidian, obsidian write, obsidian note, note convention,
+  markdown convention, emphasis breakage, bold breakage, heading rule,
+  tag axis, frontmatter sticker, vault convention, self-check,
+  format validation, PARA method, ADR
 
   Triggers (Japanese):
-  オブシディアン, ノート作成, マークダウン, 強調, 見出し, タグ, バルト規約
+  オブシディアン, ノート作成, マークダウン, 強調が壊れる, 太字が壊れる,
+  見出し, タグ, バルト規約, セルフチェック
+
+  Triggers (Chinese):
+  Obsidian, 笔记写作, 笔记规范, 强调失效, 加粗失效, 标题, 标签,
+  Vault 规范, 自查
+
+  Triggers (Spanish / French / German / Italian):
+  obsidian, nota, convención, énfasis roto, encabezado, etiqueta,
+  obsidienne, gras cassé, en-tête, étiquette,
+  obsidian, hervorhebung gebrochen, überschrift, tag,
+  obsidian, grassetto rotto, intestazione, etichetta
 
   Do NOT trigger for:
-  - 옵시디언 vault 밖 일반 마크다운 작성 (이 스킬은 vault 내 컨벤션 전용)
-  - 인터랙티브 시각화 (use obsidian-dataviewjs 또는 dataviewjs 빌더)
-  - 리뷰 노트 *자체* 작성 (use polymedia-review-skill — 그 스킬이 이 컨벤션 위임)
-  - 강의 노트 *자체* 작성 (use knou-note-writer — 그 스킬이 이 컨벤션 위임)
-  - Logseq · Notion · Bear · 일반 마크다운 (각 시스템 컨벤션 따로 적용)
+  - General markdown writing outside an Obsidian vault (this skill is
+    vault-specific)
+  - Interactive visualizations (use a dataviewjs-focused skill)
+  - Review-note authoring itself (polymedia-review-skill owns that workflow;
+    it delegates to this skill for convention enforcement)
+  - Lecture-note authoring itself (knou-note-writer owns that workflow;
+    it delegates to this skill for emphasis-breakage / heading checks)
+  - Logseq · Notion · Bear · plain markdown (each ecosystem has its own
+    conventions; this skill is Obsidian-only)
 ---
 
-# obsidian-write — 옵시디언 vault 작성 컨벤션 SSoT
+# obsidian-write — Obsidian Vault Writing Convention SSoT
 
-> Heading 규칙·강조 깨짐 룰·5축 태그·sticker frontmatter 등 옵시디언 노트 작성 시 *반복적으로* 적용되는 결정을 한 곳에 모은 권위 문서. 다른 작성 스킬(폴리미디어 리뷰·강의 노트 등)이 vault 시그널로 이 스킬을 발견하면 컨벤션을 이쪽에 위임한다.
+> A single authoritative document for repeatedly-applied decisions when writing Obsidian notes: heading depth, emphasis-breakage rule, 5-axis tags, sticker frontmatter, PARA classification. Other writing skills delegate to this file as the convention authority via a vault signal.
 
-## 사용 시나리오
+## Quick Map
 
-| 시나리오 | 동작 |
+| Scenario | What happens |
 |---|---|
-| 사용자가 vault에 새 .md 직접 작성 | 이 스킬 컨벤션 전체 적용 + 저장 후 grep self-check |
-| 사용자가 기존 .md 편집 (헤더·강조·태그 변경) | 변경 부분에 컨벤션 적용 + 영향 받는 영역 검증 |
-| 폴리미디어·knou 등 다른 스킬이 vault에서 트리거 | 그 스킬은 자기 워크플로우(인터뷰·강의 분석) 담당, 결과물의 *형식 컨벤션*은 이 스킬에 위임 |
-| 옵시디언 vault 밖 (일반 md / Notion / Logseq) | 이 스킬 비활성. 호출하는 스킬의 일반 마크다운 케이스로 처리 |
+| User writes a new `.md` directly in the vault | This skill's full conventions apply + post-write grep self-check |
+| User edits an existing `.md` (heading / emphasis / tag changes) | Conventions applied to the changed region + verification of touched area |
+| Another skill (polymedia / knou-note-writer / etc.) triggers in the vault | That skill owns its workflow (interview, lecture analysis); *format conventions* of the produced note are delegated here |
+| Outside the vault (plain markdown / Logseq / Notion / Bear) | This skill is inactive — host skill applies its own generic-markdown case |
 
-## 코어 vs 권장 vs 선택
+## Core vs Recommended vs Optional
 
-| 분류 | 항목 | 적용 조건 |
+| Tier | Items | Apply when |
 |---|---|---|
-| **코어** (모든 옵시디언 사용자 권장) | Heading(§3) · 구분선(§4) · 들여쓰기(§5) · 강조 깨짐 룰(§6) | 옵시디언이면 무조건 |
-| **권장** (한국어 사용자) | 강조 깨짐 룰 §6 — 한국어 조사 케이스 | 한국어 노트면 필수 |
-| **권장** (Make.md / 이모지 폴더 사용) | sticker frontmatter(§2) | Make.md 플러그인 또는 폴더 이모지 관리 시 |
-| **선택** (취사) | 작성 스타일(§1) · 5축 태그(§7) · PARA(§8) | 자기 vault 운영 정책에 맞으면 채택 |
+| **Core** (all Obsidian users) | Heading (§3) · Horizontal rule (§4) · Indentation (§5) · Emphasis-breakage rule (§6) | Always in Obsidian |
+| **Recommended** (CJK authors) | CJK-specific emphasis-breakage procedure (§10 + `ref/cjk-language-extra-checks.md`) | Note is written in Korean, Japanese, Chinese, or mixed CJK + Latin |
+| **Recommended** (Make.md or folder emoji users) | Sticker frontmatter (§2) | Make.md plugin or folder-emoji management is in use |
+| **Optional** (your operational policy) | Writing style §1 · 5-axis tags §7 · PARA §8 | Your vault adopts these specific patterns |
 
-코어 4개만 채택해도 옵시디언 노트 렌더링 깨짐은 거의 0. 나머지는 *opinionated* — 한 명의 사용자가 자기 vault에서 검증한 패턴.
-
----
-
-## 1. 작성 스타일 (의사결정·기록)
-
-1. **의사결정 기록 중시**: 결론보다 "왜 이렇게 결정했는가"를 상세히 남김
-2. **ADR 포맷 사용**: 맥락 → 결정 → 근거 → 결과 구조
-3. **TODO 표시**: 미결 사항을 `TODO:`로 명확히 표기
-4. **폐기 기록 보존**: ~~취소선~~으로 이전 결정을 지우지 않고 맥락 유지
-5. **기술적 근거 표 활용**: 비교 분석은 마크다운 테이블로 정리
-6. **개인 코멘트 포함**: 설계 노트 중간에 개인 생각/의문을 자연스럽게 삽입
-
-> 결정의 *결과*만 남기지 말고 *근거*도 같이. 6개월 뒤 내가 다시 봐도 "왜 이렇게 했지"가 즉시 떠올라야 함.
+Adopting only the four core items already eliminates almost all Obsidian rendering breakage. The rest is *opinionated* — patterns one user validated in their own vault. Take them if they fit; ignore if not.
 
 ---
 
-## 2. Frontmatter (sticker / 폴더 이모지)
+## Output Language Policy
 
-**노트 이모지**: 파일명에 박지 말고 frontmatter `sticker` 속성에. Make.md 플러그인 호환 형식:
+This skill is convention infrastructure, not a content generator. The convention text in this file is in English so any audience can read it, but **the notes you produce follow the user's language**.
+
+- User writes in Korean → produce Korean notes. CJK emphasis-breakage procedure (§10) kicks in.
+- User writes in English → produce English notes. CJK procedure is skipped (or run as a sanity pass anyway, since it's cheap).
+- User writes in Japanese / Chinese → same as Korean. CJK procedure applies.
+- User mixes languages → the dominant language drives §10; mixed segments run the relevant checks per language.
+
+**Never translate the user's content into English just because this skill is in English.** Conventions are language-agnostic; voice and substance stay in the user's language.
+
+---
+
+## 1. Writing Style (Decision Logging)
+
+1. **Record the why, not just the what** — conclusions decay without their reasoning. Six months later you should still see *why* you chose this path.
+2. **ADR-style structure** — Context → Decision → Rationale → Consequences. Use this for any non-trivial decision recorded in a note.
+3. **TODO markers** — Mark unresolved items with `TODO:` so they grep cleanly.
+4. **Preserve deprecated decisions** — Use ~~strikethrough~~ rather than deleting, so the historical context survives.
+5. **Tables for comparative analysis** — Markdown tables for trade-off matrices, not prose lists.
+6. **Inline personal commentary** — Drop your own thinking, doubts, half-formed reactions into the note. Notes are for you, not for an audience.
+
+> A note that only states the final decision is a dead artifact. A note that captures the deliberation is a living tool.
+
+---
+
+## 2. Frontmatter (Sticker / Folder Emoji)
+
+**Note emoji**: Don't put emoji in the filename. Put it in frontmatter `sticker` using Make.md compatible format:
 
 ```yaml
 ---
-sticker: emoji//{유니코드 코드포인트(소문자 hex)}
+sticker: emoji//{unicode-codepoint(lowercase hex)}
 ---
 ```
 
-예시:
+Examples:
 - `sticker: emoji//1f48a` → 💊
 - `sticker: emoji//1f34a` → 🍊
-- `sticker: emoji//1f4d6` → 📖 (책 노트)
-- `sticker: emoji//1f3ae` → 🎮 (게임 노트)
-- `sticker: emoji//1f3ac` → 🎬 (영화 노트)
-- `sticker: emoji//1f3b5` → 🎵 (음악 노트)
+- `sticker: emoji//1f4d6` → 📖 (book)
+- `sticker: emoji//1f3ae` → 🎮 (game)
+- `sticker: emoji//1f3ac` → 🎬 (movie)
+- `sticker: emoji//1f3b5` → 🎵 (music)
+- `sticker: emoji//1f9e0` → 🧠 (thinking / essay)
+- `sticker: emoji//1f4d8` → 📘 (academic note)
 
-**폴더 이모지**: 폴더명에 박지 말고, 폴더와 동명인 `.md` 파일(폴더 스펙 노트)의 frontmatter `sticker`에:
+**Folder emoji**: Don't put emoji in the folder name (sync / cross-platform breakage). Use the `.md` file that shares the folder's name (a "folder spec note") and put sticker in its frontmatter:
 
 ```yaml
 ---
@@ -109,379 +156,344 @@ color: ""
 ---
 ```
 
-폴더명 자체에 이모지 X (파일 시스템·동기화에서 깨질 수 있음).
+The folder spec note doubles as a place to record what the folder is *for* — directory README-style context.
 
 ---
 
-## 3. Heading 규칙
+## 3. Heading Rules
 
-Obsidian Inline Title이 파일명을 h1으로 표시한다. 본문 h1 사용 시 중복 → 본문은 **`##`(h2)부터 시작**해서 **`####`(h4)로 끝**. `#`(h1)은 절대 사용 금지.
+Obsidian's *Inline Title* renders the filename as h1. Using h1 in the body produces a duplicate title. Therefore:
+
+- Body starts at **h2 (`##`)**
+- Body ends at **h4 (`####`)** maximum
+- `h1` (`#`) is **forbidden in the body**
 
 ```markdown
-##(h2) — 메인 섹션
-###(h3) — 하위 섹션
-####(h4) — 디테일
+##(h2)  — main section
+###(h3) — subsection
+####(h4) — detail
 ```
 
-더 깊은 항목이 필요하면 **`**볼드 라벨**`**로 본문 강조 처리. 5단계 헤더(h5·h6)는 만들지 말 것.
+Deeper hierarchy: use `**bold labels**` inside the body. Don't create h5 / h6.
 
-**헤더 번호 금지**: `## 1. 주제명` ❌ → `## 주제명` ✅. 옵시디언 outline 뷰에서 번호가 사이드바를 어지럽힘.
+**No numbered headers**: `## 1. Topic` ❌ → `## Topic` ✅. Outline view gets cluttered with numbers and reordering breaks them.
 
-(마크다운 표준 MD041과는 다르지만, 옵시디언 전용이라 이식성보다 옵시디언 내 가독성 우선.)
+> This diverges from the CommonMark MD041 lint, but Obsidian is the deployment target — in-vault readability beats portability here.
+
+> **Exception for skill documents**: This skill's own files (`SKILL.md`, `README.md`, `ref/*.md`) use numbered headers (`## 1. Title`) because they're primarily consumed on GitHub where numbered section scanability outweighs Obsidian-outline concerns. The convention applies to *vault notes you write*, not to convention documents that ship to external consumers — `examples/*.md` simulate vault notes and therefore avoid numbered headers themselves.
 
 ---
 
-## 4. 구분선 (`---`) 규칙
+## 4. Horizontal Rule (`---`)
 
-수평선은 **h2 섹션 사이에만** 사용. h3 사이에는 넣지 않음. h3은 h2 아래 하위 항목이므로 같은 맥락 안에서 빈 줄로만 구분.
+`---` is **only used between h2 sections**. Never between h3s — they're siblings under the same h2 context, separated by blank lines.
 
 ```markdown
-## h2 섹션 A
-... 내용 ...
+## H2 Section A
+... content ...
 
-### h3 하위 A-1
-... 내용 ...
+### H3 sub A-1
+... content ...
 
-### h3 하위 A-2
-... 내용 ...
+### H3 sub A-2
+... content ...
 
 ---
 
-## h2 섹션 B
+## H2 Section B
 ```
 
-frontmatter 시작·끝의 `---`은 예외 (frontmatter 구문).
+Exception: frontmatter delimiters at top of file.
 
 ---
 
-## 5. 들여쓰기
+## 5. Indentation
 
-리스트 하위 항목은 **탭(Tab)**으로 들여쓰기. 스페이스 X. 옵시디언이 탭 기준으로 동작.
+List sub-items use **tabs**, not spaces. Obsidian's behaviors (toggle, fold, drag) are tab-based:
 
 ```markdown
-- 1단 항목
-	- 2단 항목 (탭 1개)
-		- 3단 항목 (탭 2개)
+- Top-level item
+	- Second level (1 tab)
+		- Third level (2 tabs)
 ```
 
 ---
 
-## 6. 강조 기호 사용 규칙 (`**` · `*` · `_`)
+## 6. Emphasis (`**`, `*`, `_`) — CommonMark Flanking Rule
 
-> **한국어 사용자에게 가장 중요한 절.** CommonMark flanking 규칙 때문에 한국어는 영어보다 강조가 훨씬 자주 깨짐. 조사·어미가 `**` 바깥에 공백 없이 붙기 때문.
+> The **single most important rule** for CJK note authors. Bold/italic markup breaks far more often in CJK text than in Latin text because of how particles attach to words.
 
-### 마스터 룰 (한 줄)
+### Master Rule (one line)
 
-> **`**` 안쪽 바로 옆 문자가 글자(한글·영문·숫자)가 아니면 위험.** 단, 바깥쪽에 공백·줄머리·줄끝이 있으면 구제됨.
+> **If the character immediately inside `**` is not a letter (Han / Latin / digit), it's at risk.** Whitespace, line-start, or line-end on the outside saves it.
 
-세 파서(cmark · markdown-it · @lezer/markdown)에서 동일 검증됨.
+Verified consistent across three parsers (cmark · markdown-it · @lezer/markdown). Direct consequence of CommonMark's flanking rule.
 
-**구체 조건** — 다음이 *동시에* 성립하면 깨짐:
-1. `**` **바깥**에 단어문자(한·영·숫)가 공백 없이 붙음
-2. `**` **안쪽** 바로 옆에 유니코드 문장부호(`"` `'` `(` `)` `.` `,` `:` `—` `!` `?` `;` `$` 등)가 붙음
+### When it breaks
 
-**한쪽 delimiter만 성립해도 전체 볼드가 죽음** — 개/폐 delimiter가 독립적으로 판정됨.
+Both conditions must hold simultaneously:
+1. **Outside** the `**` has a word character (Han / Latin / digit) attached *without whitespace*
+2. **Inside** the `**` (right against the delimiter) has Unicode punctuation: `"` `'` `(` `)` `.` `,` `:` `—` `!` `?` `;` `$`
 
-### 깨지는 패턴 5종 (실전 빈출)
+**Either delimiter alone is enough to kill the entire bold.** Opening and closing delimiters are judged independently.
 
-**패턴 1 — 닫는 쪽 파괴** (가장 흔함, 한국어 학술·기술 노트 100% 재현)
+### Quick examples (CJK / Korean — the worst case)
+
 ```
-**활용(exploitation)**과   ❌
-**손실함수(loss)**를       ❌
-**결론이다.**이렇게         ❌
-**결론적으로,**이고         ❌
-```
+❌ **활용(exploitation)**과     ← closing ** preceded by `)`, followed by Korean particle `과`
+✅ **활용**(exploitation)과     ← keep only the Korean term bold; English gloss outside
 
-**패턴 2 — 여는 쪽 파괴**
-```
-이건**"한 우물 파기"**이다   ❌
-이건**(괄호 안)**이다        ❌
-이건**:정리하면**이다        ❌
+❌ 이건**"한 우물 파기"**이다  ← both sides break
+✅ 이건 "**한 우물 파기**" 이다  ← punctuation outside the bold
+
+❌ **결론적으로,**이렇게       ← closing ** preceded by `,`, followed by `이`
+✅ **결론적으로**, 이렇게      ← comma outside
 ```
 
-**패턴 3 — 양쪽 파괴**
-```
-이건**"결론"**이다           ❌
-이건**「개념」**이다          ❌
-```
+### Quick examples (English — happens but rarer)
 
-**패턴 4 — 리스트 아이템 닫는 쪽**
 ```
-- **"핵심 개념"**이란         ❌
-- **결론(요약)**으로         ❌
+❌ word**"text"**here           ← both sides break (no whitespace + punct inside)
+✅ word "**text**" here
+
+❌ conclusion**(note)**follows  ← same pattern
+✅ conclusion (**note**) follows
 ```
 
-**패턴 5 — 수식 인접** (학술 노트)
-```
-**임의 데이터 $D$**에         ❌  ← 닫는 ** 직전 $
-**가장 작은 $x$가 $p-1$**인   ❌
-```
+### Universal fix
 
-### 안전 수정 패턴
+Put `**` so that the character immediately inside is a letter. If you need punctuation adjacent to bold, move it outside or extend the bold to include the particle.
 
-```markdown
-# 원칙: 문장부호를 ** 바깥으로 빼거나, 조사까지 ** 안에 포함
+### Deep-dive
 
-# 따옴표
-❌ 이건**"한 우물 파기"**이다
-✅ 이건 "**한 우물 파기**"이다
-✅ 이건 **"한 우물 파기"** 이다  (양쪽 공백)
-
-# 영문병기 (가장 실용적)
-❌ **활용(exploitation)**과
-✅ **활용**(exploitation)과     ← 한글 용어만 볼드
-
-# 닫는 쪽 문장부호
-❌ **결론적으로,**이렇게
-✅ **결론적으로**, 이렇게        ← 쉼표를 ** 바깥으로
-
-# 수식 인접
-❌ **데이터 $D$**에 적용
-✅ **데이터 $D$에** 적용        ← 조사까지 ** 안
-✅ **데이터** $D$에 적용        ← 수식·조사 ** 바깥
-```
-
-**공통 원리**: `**` 바로 안쪽에 **글자**(한/영/숫)가 닿게 만들면 어떤 기호든 안전.
-
-### 잘못 알려진 것들 (myth busting)
-
-- `**"..."**` 단독은 안 깨짐. 줄머리·공백이 바깥에 있으면 OK
-- 라이브 프리뷰 버그 아님 — 세 파서 모두 동일 규칙
-- SmartyPants(둥근 따옴표) 무관 — 곧은/둥근 모두 동일 처리
-- `_..._` 대안 더 나쁨 — 언더스코어는 intraword 강조 금지가 별표보다 엄격
-
-### 위험 기호 목록 (`**` 바로 안쪽에 오면 위험)
-
-| 분류 | 기호 |
-|---|---|
-| 기본 문장부호 | `.` `,` `:` `;` `!` `?` |
-| 인용/괄호류 | `"` `'` `(` `)` `[` `]` `「` `」` `『` `』` |
-| 대시/줄임표 | `—` `–` `…` |
-| 수식/기타 | `$` `※` `~` `` ` `` `>` `/` |
-| 끝에 올 때만 위험 | `·` `&` |
-
-`*`(이탤릭) · `_`(이탤릭) 모두 동일 규칙.
+See `ref/emphasis-breakage-deep-dive.md` for:
+- Full CommonMark flanking spec walkthrough
+- Per-parser behavior comparison
+- All 6 breakage patterns with safe rewrites
+- The "risky characters" full catalog
+- Myth-busting (smart quotes, live-preview "bugs", `_..._` alternative)
 
 ---
 
-## 7. 태그 5축 모델
+## 7. Five-Axis Tag Model
 
-태그는 폴더·링크와 직교하는 **횡단적 메타데이터**.
+Tags are **horizontal metadata** — orthogonal to folders and links.
 
-- **폴더**: 1차 분류 (1:1 매핑)
-- **링크/MOC**: 명시적 의도 연결
-- **태그**: 다른 차원으로 호출하는 보조 도구
+- **Folders** — primary classification (1:1)
+- **Links / MOC** — explicit intentional connections
+- **Tags** — calling notes from a different axis (a *weak* connector, in Luhmann's Zettelkasten sense)
 
-(Luhmann의 Zettelkasten에서도 태그는 "가장 약한 연결"로 보조 역할.)
+### The five axes (use tags only along these)
 
-### 5축 (이 축에만 태그 사용)
-
-| 축 | 예시 | 폴더 대체? |
+| Axis | Examples | Could be a folder? |
 |---|---|---|
-| **Status** (상태/액션) | `#복습-필요` `#draft` `#evergreen` `#시험-핵심` | ❌ 시간 변동 |
-| **Type** (노트 종류) | `#기출정리` `#concept` `#literature-note` `#adr` | ⚠️ 횡단성 강함 |
-| **Domain** (학문/세부 도메인) | `#cs` `#database` `#math` `#psychology` | ❌ 폴더와 겹치면 금지 |
-| **Topic** (1차 주제 개념) | `#딥러닝` `#정규화` | ⚠️ MOC 노트 있으면 위키링크 우선 |
-| **Context** (컨텍스트/메타) | `#mobile` `#review-2026q2` | ❌ 일시적·메타 |
+| **Status** (state / action) | `#review-needed` `#draft` `#evergreen` `#exam-critical` | ❌ varies over time |
+| **Type** (note kind) | `#concept` `#literature-note` `#adr` `#guide` `#essay` | ⚠️ strongly horizontal |
+| **Domain** (field / subfield) | `#cs` `#database` `#math` `#psychology` | ❌ forbidden if folder already covers |
+| **Topic** (primary concept) | `#deep-learning` `#regularization` | ⚠️ prefer wikilink if a `[[X]]` MOC exists |
+| **Context** (situational / meta) | `#mobile` `#review-2026q2` | ❌ ephemeral / meta |
 
-### 금지
+### Forbidden
 
-- 디렉토리명과 동일한 태그 (이미 분류 역할 — 중복)
-- 5축에 안 맞는 자유 태그 (택소노미 일관성 깨짐)
+- Tag with the same name as the containing directory (duplicates the classification axis)
+- Free-form tags outside the 5 axes (taxonomy decays)
 
-### 명명 규칙
+### Naming
 
-- lowercase + kebab-case + 단수형 (`#literature-note` ✅, `#Literature_Notes` ❌)
-- 한국어 그대로 유지 (`#복습-필요`), 영어는 단수 (`#book` ≠ `#books`)
-- 표기 일관성: `#딥러닝` ↔ `#deep-learning` 혼용 금지
+- lowercase + kebab-case + singular (`#literature-note` ✅, `#Literature_Notes` ❌)
+- Keep native language (`#복습-필요`, `#推荐`), English singular (`#book` ≠ `#books`)
+- Pick one writing system per concept: `#deep-learning` ↔ `#딥러닝` — don't mix
 
-### 운영 원칙
+### Operating principles
 
-- **노트당 2~5개** 적정. 10개 넘으면 시그널 노이즈 (tag explosion)
-- **Topic 태그 5개+ 누적 → MOC 졸업**: `MOC - {주제}.md` 만들고 위키링크로 전환. 태그는 검색 보조로만
-- **Status 태그 만료 정책**: `#시험-핵심` 같은 시간성 태그는 frontmatter에 `tag-expires: 2026-06 (기말 후)` 명시
-- **분기 1회 가지치기**: 1~2개 노트에서만 쓰인 태그 통합/삭제
+- **2~5 tags per note** is the sweet spot. 10+ is tag-explosion noise.
+- **A Topic tag accumulating 5+ notes → graduate to a MOC**: create `MOC - {topic}.md`, switch primary navigation to wikilinks, keep the tag only as a search aid.
+- **Status tags need an expiry**: `#exam-critical` is time-bound — note expiry in frontmatter (`tag-expires: 2026-06`) or it becomes a ghost tag.
+- **Quarterly pruning**: consolidate/delete tags used by only 1–2 notes; merge spelling variants.
 
-### 위키링크 vs 태그 판단
+### Wikilink vs Tag — decision
 
-- 개념 모아 보기 → 별도 [[X]] MOC 노트 + 위키링크
-- 빠른 검색만 → 태그
-- 둘 다 → 위키링크 우선, 태그 보조
+- Want to see concept clustered → separate `[[X]]` MOC note + wikilinks
+- Want fast search only → tag
+- Both → wikilink primary, tag secondary
 
 ---
 
-## 8. PARA 분류 (선택)
+## 8. PARA Classification (Optional)
 
-Tiago Forte의 PARA 방법론 채택 시 4 디렉토리 구조:
+If you adopt Tiago Forte's PARA method, the four-folder structure:
 
 ```
 PARA/
-├── 1. Projects/     ← 현재 진행 중인 프로젝트 (마감일·결과물 있음)
-├── 2. Area/         ← 지속 관리하는 영역 (학습·자격증·건강 등)
-├── 3. Resource/     ← 참고 자료·취미·관심사
-└── 4. Achives/      ← 완료/중단된 항목
+├── 1. Projects/     ← active projects (deadlines, deliverables)
+├── 2. Area/         ← ongoing areas of responsibility (study, certifications, health)
+├── 3. Resource/     ← reference material, hobbies, interests
+└── 4. Archives/     ← completed / abandoned items
 ```
 
-### 폴더 스펙 노트
+### Folder spec note
 
-각 프로젝트·Area·Resource 폴더에 동명 `.md` 파일을 두고 그 폴더의 컨텍스트(스택·핵심 노트·진행 상황) 기록. 폴더 이모지도 여기 sticker로.
+Each Project / Area / Resource folder has a `.md` file with the same name as the folder. That file holds the folder's stack, key notes, status, and folder sticker.
 
-### 매체 중심 (Resource 영역)
+### Medium-first Resource layout
 
-리뷰·공략·메모를 작품별로 흩지 말고 **매체 폴더 안에 모음**:
+Don't scatter reviews / walkthroughs / memos across work-specific folders. Group them inside a **medium folder**:
 
 ```
 PARA/3. Resource/
-├── 게임/
-│   ├── 오버워치/        ← 공략
-│   ├── 잇벤쳐 Eatventure/
-│   └── 리뷰/            ← 감상
-├── 음악/
-│   ├── 보컬/            ← 연습·이론
-│   └── 리뷰/
-└── 책/
-    ├── 독서 목록.md
-    └── 리뷰/
+├── game/
+│   ├── overwatch/         ← walkthroughs / tactics
+│   ├── eatventure/
+│   └── reviews/           ← review notes
+├── music/
+│   ├── vocal/             ← practice, theory
+│   └── reviews/
+└── book/
+    ├── reading-list.md
+    └── reviews/
 ```
 
-리뷰 노트 권장 경로 (외부 작성 스킬과의 컨벤션):
-- `PARA/3. Resource/{매체}/리뷰/{title}.md`
+Recommended path for review notes (convention shared with external writing skills):
+- `PARA/3. Resource/{medium}/reviews/{title}.md`
 
 ---
 
-## 9. 다른 스킬과의 인터페이스 (위임)
+## 9. Delegation Interface (for Other Skills)
 
-이 스킬은 vault 내 다른 작성 스킬을 위한 **컨벤션 권위**다. 외부 스킬의 위임 인터페이스:
+This skill is the **convention authority** for other Obsidian writing skills in the same vault.
 
-### 위임 시그널
+### Delegation signal
 
-외부 스킬은 작업 디렉토리에서 다음을 감지하면 이 스킬에 컨벤션을 위임:
+Other writing skills detect this skill by checking the working directory:
 
-- `.claude/skills/obsidian-write/SKILL.md` 파일 존재 → 이 스킬이 vault local 컨벤션 권위
-- `.obsidian/` 폴더만 있고 위 파일 없음 → 일반 옵시디언 (외부 스킬이 자체 옵시디언 케이스 적용)
+| Signal | Meaning |
+|---|---|
+| `.claude/skills/obsidian-write/SKILL.md` exists | This skill is the vault-local convention authority. Other skills *must* defer to it. |
+| `.obsidian/` exists but signal above does not | Generic Obsidian vault — host skill applies its own Obsidian case |
+| Neither | Not an Obsidian context — host skill applies plain markdown |
 
-### 위임받는 항목
+### What's delegated
 
-외부 스킬(폴리미디어 리뷰·강의 노트·미래의 옵시디언 작성 스킬)이 이 스킬에 위임할 수 있는 영역:
-
-| 영역 | 위임 가능? | 비고 |
+| Area | Delegatable? | Notes |
 |---|---|---|
-| Heading 규칙(§3) | ✅ | 무조건 |
-| 구분선(§4) | ✅ | 무조건 |
-| 들여쓰기(§5) | ✅ | 무조건 |
-| 강조 깨짐 룰(§6) | ✅ | 한국어 노트면 필수 |
-| sticker frontmatter(§2) | ✅ | 외부 스킬이 매체별 sticker 제공해도 OK (폴리미디어가 매체별 이모지 제공) |
-| 5축 태그(§7) | ⚠️ | 외부 스킬 자체 태그 정책이 있으면 그쪽 우선 |
-| PARA 경로(§8) | ⚠️ | 외부 스킬이 자체 경로 정책 있으면 그쪽 우선 |
-| 자체 워크플로우 (인터뷰·분석 등) | ❌ | 외부 스킬 고유 영역, 이 스킬이 침범 X |
+| Heading rules (§3) | ✅ | Always |
+| Horizontal rule (§4) | ✅ | Always |
+| Indentation (§5) | ✅ | Always |
+| Emphasis-breakage rule (§6) + CJK procedure (§10) | ✅ | Critical for CJK |
+| Sticker frontmatter (§2) | ✅ | External skill may provide medium-specific sticker (e.g., polymedia provides per-medium emojis) |
+| 5-axis tag model (§7) | ⚠️ | If external skill has its own tag policy, that wins |
+| PARA path (§8) | ⚠️ | If external skill defines its own path policy, that wins |
+| External skill's own workflow (interview, analysis, etc.) | ❌ | This skill must not interfere |
 
-### 위임 흐름 예시
+### Example flow
 
 ```
-사용자: "오버워치 5 리뷰 써줘"
+User: "Write a review for Overwatch 2"
   ↓
-polymedia-review-skill 트리거 (산파술 인터뷰 시작)
+polymedia-review-skill triggers — starts maieutic interview
   ↓
-인터뷰 + 4D 루브릭 진행 (폴리미디어 고유 영역)
+Interview + 4D rubric (polymedia's own domain)
   ↓
-노트 작성 단계: 폴리미디어가 vault 시그널 감지
-  → `.claude/skills/obsidian-write/SKILL.md` 발견
-  → 이 스킬의 컨벤션(heading·강조 깨짐·sticker·PARA 경로) 적용
+Note-write phase: polymedia detects vault signal
+  → finds .claude/skills/obsidian-write/SKILL.md
+  → defers heading / hr / emphasis / sticker / PARA path to this skill
   ↓
-저장 후 self-check: 이 스킬의 §10 grep 4종 실행
+Post-write self-check: §10 grep 4-pack runs
   ↓
-완료
+Done
 ```
 
 ---
 
-## 10. 저장 후 self-check (필수)
+## 10. Post-Write Self-Check (Mandatory)
 
-노트를 Write·Edit으로 저장한 직후 **반드시 실행**. 사용자가 요구하기 전에 자동으로.
+Run immediately after Write / Edit, **before** reporting completion to the user. Don't wait to be asked.
 
-### 2단계 검증
+### Two-stage strategy
 
-좁은 grep으로 진짜 깨짐 빠르게 잡고, 광범 grep으로 의심 후보 훑은 뒤 사람이 한 줄씩 판단.
+Stage 1 is a narrow grep that catches real breakage. Stage 2 is a wider grep for borderline cases that need human judgment.
 
-#### Stage 1 — 빈출 깨짐 패턴 (좁은 grep, 잡히면 거의 진짜 깨짐)
+#### Stage 1 — High-confidence breakage patterns
 
 ```bash
-cd "<노트 폴더>"
-TARGET="*.md"   # 또는 특정 파일
+cd "<note folder>"
+TARGET="*.md"   # or a specific file
 
-# (1) 닫는 쪽 파괴 — 안쪽 punct + ** + 한국어 조사
-grep -nP '[\)\]"'\''\.,:;!?\$…—–]\*\*[가-힣]' $TARGET
+# (1) Closing-side break: inside-punct + ** + word-character outside (CJK-heavy)
+grep -nP '[\)\]"'\''\.,:;!?\$…—–]\*\*[가-힣\p{Han}\p{Hiragana}\p{Katakana}A-Za-z0-9]' $TARGET
 
-# (2) 여는 쪽 파괴 — 한글/영문/숫자 + ** + 시작 punct
-grep -nP '[가-힣A-Za-z0-9]\*\*["\(\[\$「『]' $TARGET
+# (2) Opening-side break: word-char outside + ** + opening punct inside
+grep -nP '[가-힣\p{Han}\p{Hiragana}\p{Katakana}A-Za-z0-9]\*\*["\(\[\$「『]' $TARGET
 
-# (3) h1 사용 (금지) — 코드 블록 내부 # 주석 제외
+# (3) h1 in body (forbidden) — exclude `# comment` inside code blocks
 for f in $TARGET; do
   awk -v file="$f" '/^```/{in_code = !in_code; next}
                     !in_code && /^# /{print file ":" NR ": " $0}' "$f"
 done
 
-# (4) 헤더 번호 (`## 1. 주제` 형태만, `802.1X` 같은 표준명 제외)
+# (4) Numbered headers (`## 1. Topic` only — does not flag `802.1X` etc.)
 grep -nE '^##+ [0-9]+\. ' $TARGET
 ```
 
-**Stage 1이 비면 통과 가능성 매우 높음.** 잡힌 줄은 §6 안전 수정 패턴으로 즉시 수정.
+If Stage 1 returns zero lines, the note has likely passed. Any hits are almost certainly real — fix with §6 patterns immediately.
 
-> ⚠️ **(3)에서 `grep -nE '^# '`만 쓰면** Python·Bash 코드 블록 안의 `# 주석`까지 잡히는 false positive. awk로 ` ``` ` 블록 토글 추적해야 정확.
+> ⚠️ For check (3), a naive `grep -nE '^# '` falsely flags `# comment` lines inside Python / Bash code blocks. The awk version tracks the code-block toggle correctly.
 
-#### Stage 2 — 마스터 룰 광범 grep (보조, false positive 많음)
+#### Stage 2 — Wide flanking grep (advisory)
 
 ```bash
-# (5) 닫는 쪽 후보: 안쪽 비글자 + 바깥 글자
-grep -nP '(?<=[^\s\w가-힣])\*\*(?=[\w가-힣])' $TARGET
+# (5) Closing-side suspects: non-word-char inside + word-char outside
+grep -nP '(?<=[^\s\w가-힣\p{Han}\p{Hiragana}\p{Katakana}])\*\*(?=[\w가-힣\p{Han}\p{Hiragana}\p{Katakana}])' $TARGET
 
-# (6) 여는 쪽 후보: 바깥 글자 + 안쪽 비글자
-grep -nP '(?<=[\w가-힣])\*\*(?=[^\s\w가-힣])' $TARGET
+# (6) Opening-side suspects: word-char outside + non-word-char inside
+grep -nP '(?<=[\w가-힣\p{Han}\p{Hiragana}\p{Katakana}])\*\*(?=[^\s\w가-힣\p{Han}\p{Hiragana}\p{Katakana}])' $TARGET
 ```
 
-이 grep은 `**`이 여는 것인지 닫는 것인지 모르므로 반대쪽 케이스(=안쪽이 실은 글자)도 같이 잡힘.
+These don't know whether each `**` is opening or closing, so they also flag the inverse case (which is actually safe). Walk each hit manually:
 
-**검증 절차** (잡힌 한 줄마다):
-1. 매치된 `**`이 어느 강조 쌍의 여는/닫는 쪽인지 확인
-2. 그 `**`의 **안쪽** 첫/마지막 문자가 **글자**인지 확인
-3. 안쪽이 글자 → false positive (마스터 룰: 안쪽이 글자면 안전)
-4. 안쪽이 비글자 + 바깥이 글자 → 진짜 깨짐 → §6으로 수정
+1. Identify which side of the bold pair the matched `**` belongs to
+2. Check what's *inside* (against the delimiter, on the bold's side)
+3. Inside is a letter → false positive (master rule: safe)
+4. Inside is punctuation + outside is a letter → real break → fix per §6
 
-#### Stage 3 — h3 사이 `---` 검사 (옵션)
+#### Stage 3 — `---` between h3s (optional)
 
 ```bash
-# --- 직후가 ## (h2)가 아닌 경우만 위반 (frontmatter 끝의 ---은 제외)
 for f in $TARGET; do
   awk -v file="$f" '
   /^---$/ && NR > 5 { hr_line = NR; in_hr = 1; next }
   in_hr { if (/^$/) next
-    if (!/^## /) print file ":" hr_line ": --- 다음에 h2가 안 옴 → " $0
+    if (!/^## /) print file ":" hr_line ": --- not followed by h2 → " $0
     in_hr = 0 }
   ' "$f"
 done
 ```
 
-### 통과 조건
+### CJK note? Run the extra procedure
 
-Stage 1 grep 4종 모두 빈 결과 → 통과. Stage 2는 광범이라 false positive 허용. Stage 3는 의심 시만.
+If the note is in Korean / Japanese / Chinese / mixed CJK, run **`ref/cjk-language-extra-checks.md`** procedure additionally. CJK particles attach to `**` differently from Latin, and the extra checks catch the breakages Stage 1/2 might miss.
 
-**이 self-check를 통과하지 않은 노트를 사용자에게 "완료"로 보고하지 말 것.**
+### Pass condition
+
+Stage 1 all empty → pass. Stage 2 is advisory (high false-positive rate). Stage 3 when suspected.
+
+**Do not report "done" to the user without passing this self-check.**
 
 ---
 
-## 11. 참고 — 외부 스킬 연결
+## 11. Related Skills
 
-이 스킬과 짝으로 동작하는 외부 옵시디언 작성 스킬:
+External Obsidian writing skills that delegate to this one:
 
-| 스킬 | 영역 | 위임 관계 |
+| Skill | Domain | Delegation |
 |---|---|---|
-| [polymedia-review-skill](https://github.com/rhino-ty/polymedia-review-skill) | 리뷰 노트 (책·게임·영화·음악) | 노트 시스템 어댑터 절에서 이 스킬 시그널 감지 → 위임 |
-| [review-myblog-converter](https://github.com/rhino-ty/review-myblog-converter) | 옵시디언 노트 → 블로그 톤 변환 | 입력 노트 형식만 사용, 이 스킬과 직접 충돌 없음 |
-| (vault local) `knou-note-writer` | 방통대 강의 노트 | 보편 self-check 이 스킬에 위임, 강의 노트 고유 grep("헤더 번호", "시험 메타")만 유지 |
-| (vault local) `obsidian-dataviewjs` | 인라인 인터랙티브 시각화 (dataviewjs) | 노트 골격은 다른 스킬이, 인터랙티브 블록만 담당. 컨벤션 위임 영역 거의 없음 |
+| [polymedia-review-skill](https://github.com/rhino-ty/polymedia-review-skill) | Review notes (books, games, movies, music) | Detects this skill via signal in its "Note system adapter" section → auto-delegates |
+| [review-myblog-converter](https://github.com/rhino-ty/review-myblog-converter) | Obsidian note → blog tone conversion | Input-only consumer; no direct convention overlap |
+| Lecture / academic note skills (vault-local) | Course notes, study material | Delegates §6 + §10 self-check; keeps domain-specific grep (e.g., header-number rule, exam-meta phrases) |
+| Interactive visualization skills (dataviewjs) | In-note interactive widgets | Owns code-block content; convention overlap minimal |
 
 ---
 
-## 라이선스
+## License
 
-MIT. 이 컨벤션 묶음이 자기 vault에 맞으면 자유롭게 채택·수정. 한국어 강조 깨짐 룰(§6)은 한국어 사용자에게 특히 유용.
+MIT. Use the convention bundle if it fits your vault; modify freely. The CJK emphasis-breakage rule (§6, §10, `ref/`) is particularly valuable for Korean / Japanese / Chinese authors — even users who don't adopt the rest may want to keep these procedures.
