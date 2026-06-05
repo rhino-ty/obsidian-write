@@ -34,6 +34,31 @@ A common new-user mistake is installing 20 plugins on day one. Resist that — y
 
 ---
 
+## AI guidance pattern: install → verify → confirm
+
+When this skill recommends a plugin to the user (during onboarding, or when a convention isn't rendering as expected), the AI agent should follow a 4-step pattern — not "click these buttons" and move on:
+
+1. **Explain why** — 1–2 sentences from the plugin's "Why a first-time user might want it" section. Never ask the user to install something without telling them what it solves.
+2. **Walk through install** — the "Install + first 5 minutes" block of the plugin entry.
+3. **Verify it worked** — the "Verify the install worked" block. Run the checks yourself if you have the access; otherwise describe each check and what the user should see.
+4. **Ask for confirmation** — explicitly ask the user to confirm the verification result before proceeding with conventions that depend on the plugin. Example: *"Can you see the Spaces panel on the sidebar now, and does an existing folder's emoji show up when you look at it? Tell me what you see before we adopt the sticker convention."*
+
+### Why the verify step is mandatory, not optional
+
+Obsidian plugins fail silently in three predictable ways:
+
+| Silent-failure mode | What the user sees | Why it matters |
+|---|---|---|
+| Installed but not enabled | The plugin appears in "Installed plugins" list, but the toggle is off. Conventions referencing it appear to be "broken" | A new user often misses that *install* and *enable* are two separate clicks |
+| Enabled but missing follow-up setting | Plugin is on, but a feature toggle (e.g., Dataview's "Enable JavaScript Queries") is off by default. Half the plugin works, half doesn't | Many plugins ship with conservative defaults that require an explicit opt-in for the most-recommended feature |
+| Enabled and configured but UI didn't refresh | Plugin should work but the sidebar/panel hasn't redrawn yet. Looks broken until reload | Obsidian needs `Ctrl+R` or restart for some plugin loads — easy to forget |
+
+Without the verify step, the user adopts conventions assuming the plugin works. The convention silently fails (sticker = plain text, not an icon; dataview block = literal code, not a table). The user loses trust in the skill before they understand why.
+
+The verify step + explicit user confirmation is the cheapest insurance against this trust loss. **Don't skip it, even when the install looks trivially successful.**
+
+---
+
 ## Required tier
 
 These two plugins make this skill's conventions *actually do what they describe*.
@@ -65,6 +90,17 @@ Obsidian's default sidebar is text-only. After 30 folders and 200 notes, it beco
 2. Settings → Make.md → enable "Spaces" (sidebar panel)
 3. Right-click any folder → "Set sticker" → pick an emoji
 4. Make.md auto-creates the folder-spec note (same name as folder) with the sticker frontmatter
+
+**Verify the install worked**:
+1. Settings → Community plugins → confirm "Make.md" toggle is ON in the *Installed* section
+2. Look at the sidebar — a new **Spaces** panel should be visible (usually left side, near or below the file explorer)
+3. Right-click any folder → confirm "Set sticker" appears in the context menu
+4. Open a note that has `sticker: emoji//1f48a` in frontmatter → switch to Reading View → confirm 💊 emoji renders (in the note's tab title, or in the file explorer per theme)
+
+If the Spaces panel doesn't appear: Settings → Make.md → enable "Spaces" → reload Obsidian (`Ctrl+R` or full restart).
+If the sticker emoji doesn't render: verify the frontmatter is **exactly** `sticker: emoji//1f48a` (no spaces around `//`, hex in lowercase, no quotes around the value).
+
+**Tell the user**: After walking them through install, ASK explicitly: *"Can you see the Spaces panel in the sidebar? And does the sticker emoji actually render on a note that has the frontmatter?"* Wait for confirmation on both before proceeding to adopt §2 sticker conventions. If only the Spaces panel appears (no sticker render), the user's frontmatter syntax is likely slightly off — walk them through creating a fresh note with the exact syntax to debug.
 
 **Watch out**:
 - Syncthing / iCloud / Dropbox: a `.makemd/` folder appears with `superstate.mdc` and `fileCache.mdc`. These can produce sync conflicts — usually safe to ignore or .gitignore
@@ -110,6 +146,23 @@ Your notes already contain structured data (frontmatter properties, tags, dates)
    ```
    ````
 4. Switch to Reading View — see all notes tagged `#book` as a clickable list
+
+**Verify the install worked**:
+1. Settings → Community plugins → confirm "Dataview" toggle is ON
+2. Settings → Dataview → **confirm both "Enable JavaScript Queries" AND "Enable Inline JavaScript Queries" are ON** — these are OFF by default after install. This is the most common silent-failure for new Dataview users
+3. In a test note, add this block and save:
+   ````
+   ```dataview
+   LIST FROM "" LIMIT 5
+   ```
+   ````
+4. Switch to Reading View → confirm 5 note names appear as a clickable list (the `FROM ""` means "the whole vault")
+
+If the dataview block renders as literal code (with the backticks visible in Reading View): plugin isn't enabled. Re-check step 1, reload Obsidian.
+If the list is empty even though the vault has notes: try `LIST FROM ""` exactly with empty quoted path — that's the "whole vault" syntax.
+If block syntax works but inline `= dv.current().file.name` doesn't: the second JavaScript toggle (Inline) is off — go back to step 2.
+
+**Tell the user**: ASK explicitly: *"Did the test dataview block render as a list with 5 note names? And in Settings → Dataview, are **both** JavaScript Queries toggles turned on?"* Both must confirm positive before §5 typed properties + dashboard usage is reliable. The second-toggle gotcha bites every new Dataview user — don't skip checking it.
 
 **Quick query recipe book**:
 
@@ -158,6 +211,16 @@ Each `examples/example-*.md` file in this skill ends with a `## Minimal template
 5. Replace placeholders: `<YYYY-MM-DD>` → `<% tp.date.now("YYYY-MM-DD") %>`
 6. Trigger: command palette → "Templater: Create new note from template"
 
+**Verify the install worked**:
+1. Settings → Community plugins → confirm "Templater" toggle is ON
+2. Settings → Templater → confirm "Template folder location" matches where you actually put templates (e.g., `Templates/`, exact path)
+3. Run command palette → "Templater: Create new note from template" → pick your template → confirm a new note opens with `<% tp.date.now(...) %>` replaced by today's actual date
+
+If `<% ... %>` appears as literal text in the new note: either Template folder location is wrong (Templater doesn't recognize the file as a template) or the new note wasn't created via the Templater command.
+If the command palette doesn't show "Create new note from template": plugin not enabled, or Obsidian needs reload.
+
+**Tell the user**: ASK: *"When you created a new note from a template, did the `<% tp.date %>` get replaced by today's actual date (like `2026-06-05`)?"* If yes, the minimal-template-to-Templater automation pipeline works. If no, the most likely cause is the Template folder location setting pointing somewhere wrong — confirm the path matches.
+
 **Watch out**:
 - "Trigger Templater on new file creation" can cause unexpected behavior — leave off until you know what you're doing
 - User scripts (custom JavaScript) live in a separate folder you configure separately
@@ -180,6 +243,18 @@ The `example-daily-note.md` pattern in `examples/` is only sustainable if creati
 2. Settings → Periodic Notes → enable Daily / Weekly / Monthly notes
 3. For each, set folder (e.g., `Daily/{{date:YYYY}}/`) and template (point to your Templater daily template)
 4. Hotkey "Open today's daily note" — bind to `Ctrl+Shift+D` or similar
+
+**Verify the install worked**:
+1. Settings → Community plugins → confirm "Periodic Notes" toggle is ON
+2. Settings → Periodic Notes → confirm Daily Notes is enabled and folder format string is set (e.g., `Daily/{{date:YYYY}}/`)
+3. Run command palette → "Periodic Notes: Open today's daily note" → confirm the note opens at the right path (e.g., `Daily/2026/2026-06-05.md` for today)
+4. Confirm the filename matches today's date in the configured format
+
+If the daily note opens in vault root instead of the configured folder: folder format string likely has a typo. Use `{{date:YYYY}}` not `{{YYYY}}`.
+If the command isn't available in the palette: Daily Notes isn't enabled in Periodic Notes settings.
+If the new note is blank when you expected a templated note: the template path setting points to a file that doesn't exist or to a folder instead of a template file.
+
+**Tell the user**: ASK: *"When you ran 'Open today's daily note', did the file open at the expected path with today's date as the filename? And did it pre-fill with your template content?"* All three must confirm before the `example-daily-note.md` workflow is sustainable.
 
 **Alternative**: the older *Calendar* plugin shows a small calendar in the sidebar and creates daily notes on click. Simpler, less flexible. Pick Calendar if you want a visual calendar widget, Periodic Notes if you want weekly/quarterly notes too.
 
@@ -214,6 +289,18 @@ Linter and this skill's §10 self-check **overlap, but neither fully replaces th
    - **Spacing**: "Trailing spaces", "Remove multiple consecutive blank lines"
 4. Important: **disable** any rule that conflicts with your existing notes until you're ready to bulk-fix them (e.g., "Strict line breaks" can rewrite a lot)
 
+**Verify the install worked**:
+1. Settings → Community plugins → confirm "Linter" toggle is ON
+2. Settings → Linter → **leave "Run linter on save" OFF for the first verification** (avoids accidental mass edits on existing notes)
+3. Create a test note with a deliberate issue — e.g., trailing whitespace at the end of a line, or extra blank lines between paragraphs
+4. Run command palette → "Linter: Lint current file"
+5. Confirm the issue is auto-fixed in place
+
+If no fix happens: the rule for that issue isn't enabled. Settings → Linter → Rules → toggle the relevant rule on (e.g., "Trailing spaces").
+If Linter rewrites things you didn't want changed: turn off that specific rule. Linter is opt-in per rule, not all-or-nothing.
+
+**Tell the user**: ASK: *"When you ran Linter on the test file, did it fix the issue you put in? And did it leave alone anything you didn't want changed?"* Once both confirm, the user can flip "Run linter on save" ON. **Critical to mention**: Linter and this skill's §10 grep are complementary, not redundant — see the table at the top of this section. Encourage running both, not picking one. New users sometimes assume Linter "covers everything" and disable §10's CJK-emphasis-specific checks, which silently fails on Korean / Japanese / Chinese content.
+
 ---
 
 ### 6. Tasks
@@ -239,6 +326,23 @@ The `- [ ] Task` checkbox in standard markdown is static — it sits in whatever
    ```
    ````
 
+**Verify the install worked**:
+1. Settings → Community plugins → confirm "Tasks" toggle is ON
+2. In a test note, type: `- [ ] Test task 🗓 2026-12-31 ⏫`
+3. Confirm in Reading View that the date and priority emoji render as styled metadata (not as literal emoji characters in plain text)
+4. In a separate note, add a query block:
+   ````
+   ```tasks
+   not done
+   ```
+   ````
+5. Confirm the test task appears in the query result
+
+If the emoji metadata isn't being parsed (no due date showing as styled metadata): the emoji must be the exact unicode character. Copy-paste from the Tasks documentation if typing fails — `🗓` (U+1F5D3) vs `📅` (U+1F4C5) look similar but only the first works.
+If the query renders as literal code in Reading View: plugin isn't enabled.
+
+**Tell the user**: ASK: *"In the test task, does the due date show up as styled metadata (highlighted / boxed), not as a literal emoji + date string? And does the test task appear in the query result?"* Both must confirm before §12's task list extensions work as documented.
+
 **Watch out**:
 - Emoji metadata is the default — feels weird at first but reads fluently after a week
 - "Auto-suggest" can pop emoji suggestions while you type — turn off if annoying
@@ -260,6 +364,16 @@ SKILL.md §7's "quarterly pruning" — *consolidate / delete tags used by only 1
 1. Install → Enable
 2. Open the Tags pane (Settings → Core plugins → Tags pane)
 3. Right-click any tag → Tag Wrangler adds "Rename" and other options
+
+**Verify the install worked**:
+1. Settings → Community plugins → confirm "Tag Wrangler" toggle is ON
+2. Settings → Core plugins → confirm "Tags pane" is enabled (Tag Wrangler depends on it)
+3. Open the Tags pane (usually right sidebar) → right-click any existing tag → confirm "Rename tag" appears in the context menu (alongside other Tag Wrangler options)
+
+If the right-click menu only shows standard Obsidian options (no Tag Wrangler entries): the plugin isn't enabled, or the Tags pane isn't open in the visible sidebar.
+If the Tags pane itself is missing: enable Settings → Core plugins → Tags pane, then reopen Obsidian.
+
+**Tell the user**: ASK: *"When you right-click a tag in the Tags pane, do you see Tag Wrangler-specific options like 'Rename tag'?"* If yes, the SKILL.md §7 quarterly pruning workflow is now feasible. Emphasize that bulk-rename operations touch every note containing the tag — recommend committing a vault git snapshot (or backup) before the first rename, and proceeding one tag at a time the first few times.
 
 **Watch out**:
 - Bulk renames touch every note containing the tag — `git commit` before doing them

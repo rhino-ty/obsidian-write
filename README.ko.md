@@ -81,10 +81,16 @@ obsidian-write/
 │   │                                       위키링크, 블록 ID, 임베드, 콜아웃(풀 타입+별칭),
 │   │                                       프로퍼티(1.4+ 타입), 코멘트, 하이라이트, 수식,
 │   │                                       머메이드, 각주, 태스크 확장 상태, HTML 일부
-│   └── obsidian-plugin-essentials.md     # 첫 사용자 친화 플러그인 가이드 —
-│                                           전제(Make.md/Dataview) / 권장 / 호환 3분류,
-│                                           각 플러그인의 "왜 필요한가" + 첫 5분 설정,
-│                                           4단계 점진 도입 계획, Linter ↔ §10 비교표
+│   ├── obsidian-plugin-essentials.md     # 첫 사용자 친화 플러그인 가이드 —
+│   │                                       전제(Make.md/Dataview) / 권장 / 호환 3분류,
+│   │                                       각 플러그인 "왜 필요한가" + 설치 + 검증 단계,
+│   │                                       AI 안내 패턴(install→verify→confirm), 4단계 도입
+│   ├── para-classification.md            # PARA 방법론 폴더 구조 + 폴더 스펙 노트 + 매체 중심
+│   │                                       Resource 레이아웃 + 결정 룰 + 마이그레이션
+│   │                                       (SKILL.md §8 분리 ref)
+│   └── delegation-for-skill-authors.md   # 다른 옵시디언 작성 스킬 개발자용 — 감지 시그널,
+│                                           위임 가능/불가능 영역, 표준 위임 흐름, 흔한 실수,
+│                                           버전 안정성 (SKILL.md §9 분리 ref)
 ├── examples/
 │   ├── example-academic-note.md          # 학습/강의 노트 (예: 컴퓨터 네트워크 강의)
 │   ├── example-essay.md                  # 수필/자기 분석 노트

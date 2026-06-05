@@ -279,89 +279,19 @@ Tags are **horizontal metadata** — orthogonal to folders and links.
 
 ---
 
-## 8. PARA Classification (Optional)
+## 8. PARA Classification (Optional, separate reference)
 
-If you adopt Tiago Forte's PARA method, the four-folder structure:
+If you adopt Tiago Forte's PARA method, this skill's conventions work well with it. The four-folder structure (`1. Projects` / `2. Area` / `3. Resource` / `4. Archives`), the **folder spec note** pattern (a `.md` file with the same name as its folder, holding sticker + context), and the **medium-first Resource layout** (`PARA/3. Resource/{medium}/reviews/{title}.md`) are documented in detail in `ref/para-classification.md` along with PARA-vs-other-systems decision rules, migration tips, and how PARA interacts with the 5-axis tag model.
 
-```
-PARA/
-├── 1. Projects/     ← active projects (deadlines, deliverables)
-├── 2. Area/         ← ongoing areas of responsibility (study, certifications, health)
-├── 3. Resource/     ← reference material, hobbies, interests
-└── 4. Archives/     ← completed / abandoned items
-```
-
-### Folder spec note
-
-Each Project / Area / Resource folder has a `.md` file with the same name as the folder. That file holds the folder's stack, key notes, status, and folder sticker.
-
-### Medium-first Resource layout
-
-Don't scatter reviews / walkthroughs / memos across work-specific folders. Group them inside a **medium folder**:
-
-```
-PARA/3. Resource/
-├── game/
-│   ├── overwatch/         ← walkthroughs / tactics
-│   ├── eatventure/
-│   └── reviews/           ← review notes
-├── music/
-│   ├── vocal/             ← practice, theory
-│   └── reviews/
-└── book/
-    ├── reading-list.md
-    └── reviews/
-```
-
-Recommended path for review notes (convention shared with external writing skills):
-- `PARA/3. Resource/{medium}/reviews/{title}.md`
+PARA-skippers (Johnny Decimal, LATCH, Bullet Journal, flat folders, topic-driven hierarchies, etc.) can ignore this section entirely — the rest of this skill's conventions (sticker, tags, emphasis, self-check) are layout-agnostic.
 
 ---
 
-## 9. Delegation Interface (for Other Skills)
+## 9. Delegation Interface (for skill authors, separate reference)
 
-This skill is the **convention authority** for other Obsidian writing skills in the same vault.
+Building another Obsidian writing skill (review notes, lecture notes, journal automation, etc.) that should delegate convention authority to this one? See `ref/delegation-for-skill-authors.md` for the detection signal priority, the delegatable / non-delegatable convention areas, the standard delegation flow, common mistakes to avoid, versioning stability rules, and worked examples (polymedia-review-skill, knou-note-writer).
 
-### Delegation signal
-
-Other writing skills detect this skill by checking the working directory:
-
-| Signal | Meaning |
-|---|---|
-| `.claude/skills/obsidian-write/SKILL.md` exists | This skill is the vault-local convention authority. Other skills *must* defer to it. |
-| `.obsidian/` exists but signal above does not | Generic Obsidian vault — host skill applies its own Obsidian case |
-| Neither | Not an Obsidian context — host skill applies plain markdown |
-
-### What's delegated
-
-| Area | Delegatable? | Notes |
-|---|---|---|
-| Heading rules (§3) | ✅ | Always |
-| Horizontal rule (§4) | ✅ | Always |
-| Indentation (§5) | ✅ | Always |
-| Emphasis-breakage rule (§6) + CJK procedure (§10) | ✅ | Critical for CJK |
-| Sticker frontmatter (§2) | ✅ | External skill may provide medium-specific sticker (e.g., polymedia provides per-medium emojis) |
-| 5-axis tag model (§7) | ⚠️ | If external skill has its own tag policy, that wins |
-| PARA path (§8) | ⚠️ | If external skill defines its own path policy, that wins |
-| External skill's own workflow (interview, analysis, etc.) | ❌ | This skill must not interfere |
-
-### Example flow
-
-```
-User: "Write a review for Overwatch 2"
-  ↓
-polymedia-review-skill triggers — starts maieutic interview
-  ↓
-Interview + 4D rubric (polymedia's own domain)
-  ↓
-Note-write phase: polymedia detects vault signal
-  → finds .claude/skills/obsidian-write/SKILL.md
-  → defers heading / hr / emphasis / sticker / PARA path to this skill
-  ↓
-Post-write self-check: §10 grep 4-pack runs
-  ↓
-Done
-```
+Regular skill *users* writing notes in their own vault don't need this section — it's purely for other AI agent skill developers.
 
 ---
 

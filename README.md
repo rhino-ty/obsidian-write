@@ -80,10 +80,17 @@ obsidian-write/
 │   │                                       wikilinks, block IDs, embeds, callouts (full type list),
 │   │                                       properties, comments, highlight, math, mermaid,
 │   │                                       footnotes, task list extensions, HTML subset
-│   └── obsidian-plugin-essentials.md     # Plugin guide for first-time users — Required /
-│                                           Recommended / Compatible tiers with "why install"
-│                                           rationale, 4-stage rollout plan, Linter ↔ §10
-│                                           overlap analysis
+│   ├── obsidian-plugin-essentials.md     # Plugin guide for first-time users — Required /
+│   │                                       Recommended / Compatible tiers with "why install"
+│   │                                       rationale, 4-stage rollout, Linter ↔ §10 analysis,
+│   │                                       per-plugin verification + AI guidance pattern
+│   ├── para-classification.md            # PARA method folder structure + folder spec note +
+│   │                                       medium-first Resource layout + decision rules +
+│   │                                       migration tips (SKILL.md §8 separate reference)
+│   └── delegation-for-skill-authors.md   # For other Obsidian writing skill authors —
+│                                           detection signal, delegatable / non-delegatable
+│                                           contract, standard delegation flow, common mistakes,
+│                                           versioning stability (SKILL.md §9 separate reference)
 └── examples/
     ├── example-academic-note.md          # Course / study note (e.g., university lecture)
     ├── example-essay.md                  # Reflective essay (e.g., self-analysis)
