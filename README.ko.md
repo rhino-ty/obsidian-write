@@ -75,8 +75,12 @@ obsidian-write/
 ├── ref/
 │   ├── emphasis-breakage-deep-dive.md    # CommonMark flanking 스펙 + 파서별 동작 +
 │   │                                       6 패턴 + 위험 문자 카탈로그 + 통설 깨기
-│   └── cjk-language-extra-checks.md      # 한국어·일본어·중국어 전용 절차 — 언제 돌리고,
-│                                           무엇을 검사하고, 왜 CJK가 다른지
+│   ├── cjk-language-extra-checks.md      # 한국어·일본어·중국어 전용 절차 — 언제 돌리고,
+│   │                                       무엇을 검사하고, 왜 CJK가 다른지
+│   └── obsidian-syntax-reference.md      # Obsidian Flavored Markdown 카탈로그 —
+│                                           위키링크, 블록 ID, 임베드, 콜아웃(풀 타입+별칭),
+│                                           프로퍼티(1.4+ 타입), 코멘트, 하이라이트, 수식,
+│                                           머메이드, 각주, 태스크 확장 상태, HTML 일부
 ├── examples/
 │   ├── example-academic-note.md          # 학습/강의 노트 (예: 컴퓨터 네트워크 강의)
 │   ├── example-essay.md                  # 수필/자기 분석 노트

@@ -74,8 +74,12 @@ obsidian-write/
 │   ├── emphasis-breakage-deep-dive.md    # CommonMark flanking spec walkthrough +
 │   │                                       per-parser behavior + full risky-char catalog +
 │   │                                       myth-busting (smart quotes, live-preview, `_..._`)
-│   └── cjk-language-extra-checks.md      # Korean/Japanese/Chinese-specific procedure —
-│                                           when to run, what to check, why CJK is different
+│   ├── cjk-language-extra-checks.md      # Korean/Japanese/Chinese-specific procedure —
+│   │                                       when to run, what to check, why CJK is different
+│   └── obsidian-syntax-reference.md      # Obsidian Flavored Markdown catalog —
+│                                           wikilinks, block IDs, embeds, callouts (full type list),
+│                                           properties, comments, highlight, math, mermaid,
+│                                           footnotes, task list extensions, HTML subset
 └── examples/
     ├── example-academic-note.md          # Course / study note (e.g., university lecture)
     ├── example-essay.md                  # Reflective essay (e.g., self-analysis)

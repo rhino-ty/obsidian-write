@@ -5,6 +5,9 @@ All notable changes to obsidian-write are documented here. Format roughly follow
 ## [Unreleased]
 
 ### Added
+- `ref/obsidian-syntax-reference.md` — full Obsidian Flavored Markdown catalog. Covers wikilinks (5 variations + disambiguation + aliases), block IDs (paragraph / list-item / quote placement), embeds (notes / sections / blocks / images with width+height / audio / video / PDF with page / query embeds), callouts (13 canonical types + alias mapping, collapse `-`/`+`, nesting, custom CSS), properties (Obsidian 1.4+ typed properties), inline tags (character rules), comments, highlight, math (MathJax 3.x + align environment), Mermaid (full type list + `class NodeName internal-link;` for vault-note linking), footnotes (standard + inline portability warning), task lists (GFM + Obsidian extensions + Tasks plugin syntax), strikethrough, HTML subset, Dataview integration. Verified against Obsidian 1.5+
+- `SKILL.md` §11 (new) — "Obsidian-Specific Syntax (separate reference)" pointing to the syntax catalog. Previous §11 Related Skills renumbered to §12
+- `SKILL.md` §6 — new "Same rule applies to `*`, `_`, and `==`" callout, noting that the CommonMark flanking rule applies to Obsidian's `==highlight==` delimiter too (substitute `=` for `*` in §10 Stage 1 grep to catch highlight breakage in CJK notes)
 - `templates/` directory consolidated into `examples/` (each example file ends with a `## Minimal template to start from` section). No separate templates folder — this skill's conventions are medium-agnostic, so a single template per shape is redundant
 - 4 new examples — `example-moc.md`, `example-folder-spec-note.md`, `example-daily-note.md`, `example-fix-before-after.md`
 - `scripts/audit-vault.sh` — batch audit script wrapping Stage 1 + CJK extra grep checks across a whole vault, with `--cjk-only`, `-v` (verbose), `-q` (quiet) flags; CI-friendly exit code

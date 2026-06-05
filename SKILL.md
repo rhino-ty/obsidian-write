@@ -220,6 +220,10 @@ Both conditions must hold simultaneously:
 
 Put `**` so that the character immediately inside is a letter. If you need punctuation adjacent to bold, move it outside or extend the bold to include the particle.
 
+### Same rule applies to `*` (italic), `_` (italic), and `==` (Obsidian highlight)
+
+All emphasis delimiters follow the same CommonMark flanking rule. The grep patterns in §10 cover `**`; substitute `=` for `*` in those patterns to also catch `==highlight==` breakage in CJK notes. Highlight-specific grep variants are in `ref/obsidian-syntax-reference.md` §8.
+
 ### Deep-dive
 
 See `ref/emphasis-breakage-deep-dive.md` for:
@@ -437,7 +441,28 @@ Stage 1 all empty → pass. Stage 2 is advisory (high false-positive rate). Stag
 
 ---
 
-## 11. Related Skills
+## 11. Obsidian-Specific Syntax (separate reference)
+
+This skill's §1–§10 are *convention rules* (when to use what, formatting policy). The *catalog of syntax* that Obsidian adds on top of CommonMark + GFM lives in a separate reference file:
+
+`ref/obsidian-syntax-reference.md` covers:
+- Wikilinks (`[[Note]]`, `[[Note|Display]]`, `[[Note#Heading]]`, `[[Note#^block]]`, same-note links) + disambiguation rules
+- Block IDs (`^id`) — paragraph / list-item / quote-block placement
+- Embeds (`![[...]]`) — notes, sections, blocks, images with width+height, audio, video, PDF with page, query embeds
+- Callouts — full type catalog (13 canonical types + aliases like `summary`/`tldr` = `abstract`), collapsing (`-`/`+`), nesting, custom CSS callouts
+- Properties — Obsidian 1.4+ typed properties (text/list/number/checkbox/date/datetime), standard names (`tags`, `aliases`, `cssclasses`, `publish`, `cover`)
+- Inline tags — character rules, frontmatter vs inline trade-offs
+- Comments (`%%hidden%%`) — Obsidian-specific, **not** portable to other markdown parsers (use HTML comments for portability)
+- Highlight (`==text==`) — follows the same flanking rule as `**` (see §6 above)
+- Math — MathJax 3.x, inline + block + `align` environments
+- Mermaid — full type list + `class NodeName internal-link;` for vault-note linking (Obsidian-only, won't navigate on GitHub)
+- Footnotes — standard `[^1]` + inline `^[...]` (portability warning)
+- Task lists — GFM `- [ ]` + Obsidian extensions (`- [/]` in-progress, `- [-]` cancelled, `- [?]`, `- [!]`, `- [<]`, `- [>]`, etc.) + Tasks plugin emoji metadata
+- Strikethrough, HTML embedding subset, Dataview integration
+
+Verified against Obsidian 1.5+. Use this when you need to look up the *syntax* itself; this SKILL.md handles the *conventions* around when to use it.
+
+## 12. Related Skills
 
 External Obsidian writing skills that delegate to this one:
 
