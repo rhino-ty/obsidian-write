@@ -123,3 +123,77 @@ Most JS interviews ask "explain prototypes" mechanically. If you've internalized
 The `> Sample answer skeleton` block at the end is a small opinionated pattern — using a blockquote inside a section to embed a structured answer template. Useful for notes that will be retrieved during interview prep.
 
 Stage 1 self-check on this file: zero hits. Pass.
+
+---
+
+## Minimal template to start from
+
+````markdown
+---
+sticker: emoji//2753
+created: <YYYY-MM-DD>
+source_paper: "<Author, 'Title', Year>"   # if a paper-based literature note
+source_url: "<URL>"
+tags:
+  - <domain>               # e.g., javascript, distributed-systems, linguistics
+  - <subdomain>            # e.g., language-design, consensus, semantics
+  - literature-note        # signals synthesis-of-external-material vs original
+---
+
+> **Note type**: <literature note / analytical essay / framework deep-dive>. <what the external source is + what your contribution is>
+
+## The question
+
+<the central "why" question. Most reference notes are stronger when oriented around a question rather than around a topic.>
+
+## The two (or three) models / positions / approaches
+
+### <Model A>
+
+- <defining feature>
+- <how it handles the central question>
+
+### <Model B>
+
+- <contrasting feature>
+- <how it handles the central question differently>
+
+## <Author>'s reading / argument
+
+<reconstruct the source's argument. What's the move that gives the paper / book its identity?>
+
+> <the most interesting move quoted directly or paraphrased. Worth a callout.>
+
+## How this maps to <modern context / your work / observable behavior>
+
+### Why <observation 1>
+
+<the author's framing predicts this observation>
+
+### Why <observation 2>
+
+<another consequence>
+
+## What I think the source gets right
+
+<your assessment, not a summary>
+
+## What I think the source underemphasizes
+
+<the gap or limitation. A literature note without this section is a fan letter.>
+
+## How to use this in <interview / practice / argument>
+
+> Sample structure: <a usable framing>
+
+## Related
+
+- [[<companion-note>]]
+- [[MOC - <domain>]]
+
+## TODO
+
+- TODO: <primary-source verification>
+- TODO: <follow-up reading>
+````
+

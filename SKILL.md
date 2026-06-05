@@ -1,77 +1,31 @@
 ---
 name: obsidian-write
 description: >
-  Single Source of Truth (SSoT) skill for writing and editing notes in an
-  Obsidian vault. Enforces a coherent set of conventions:
-  Heading (h2~h4, no h1) + horizontal rule (`---` between h2 sections only)
-  + indentation (Tab) + emphasis-breakage guard (CommonMark flanking rule)
-  + sticker frontmatter (Make.md compatible) + 5-axis tag model
-  (Status / Type / Domain / Topic / Context) + PARA classification.
-  Post-write grep self-check (4 patterns) catches the most common Obsidian
-  rendering breakage before you save.
+  Convention SSoT for Obsidian vault note writing — heading depth (h2~h4),
+  horizontal-rule placement, tab indentation, CommonMark emphasis-breakage
+  guard, sticker frontmatter, 5-axis tag model, PARA classification, plus
+  post-write grep self-check. CJK-optimized — Korean / Japanese / Chinese
+  particle attachment makes `**bold**` far more fragile than in Latin, and
+  this skill ships a dedicated procedure for it. Other Obsidian writing
+  skills delegate convention authority here via vault signal
+  `.claude/skills/obsidian-write/SKILL.md`. Output language follows the
+  user (Korean request → Korean note). Full rules in SKILL.md, deep-dive
+  in ref/, vault-note demos in examples/.
 
-  Opinionated skill — one Obsidian user codified the conventions they
-  validated in their own vault. Particularly valuable for CJK
-  (Korean / Japanese / Chinese) note authors: bold/italic markup is far more
-  fragile in those languages because particles, postpositions, and joining
-  characters attach to `**` without whitespace. This skill ships a dedicated
-  procedure for that, see `ref/cjk-language-extra-checks.md`.
+  ALWAYS trigger: writing or editing a vault .md; explicit format / self-check
+  / emphasis-breakage check request; any other Obsidian writing skill firing
+  in the vault (auto-delegated).
 
-  Other Obsidian writing skills (polymedia-review-skill, knou-note-writer,
-  future skills) can delegate convention authority to this skill when they
-  detect the vault signal `.claude/skills/obsidian-write/SKILL.md`. That
-  delegation interface is defined in §9.
+  Triggers (KO): 옵시디언, 노트 작성, 강조 깨짐, 헤더 규칙, 태그, sticker, PARA, vault 컨벤션, self-check, 의사결정 기록, ADR.
+  Triggers (EN): obsidian, note convention, emphasis breakage, heading rule, tag axis, sticker, vault convention, self-check, PARA, ADR.
+  Triggers (JA): オブシディアン, ノート作成, 強調が壊れる, 見出し, タグ, セルフチェック.
+  Triggers (ZH): Obsidian, 笔记写作, 强调失效, 标题, 标签, 自查.
+  Triggers (ES/FR/DE/IT): obsidian + nota/note/Notiz/nota + convención/convention/Konvention/convenzione + énfasis/gras/Hervorhebung/grassetto.
 
-  Output language follows the user's language. If the user requests a note
-  in Korean, this skill produces a Korean note; English request, English
-  note; and so on. The conventions (heading, tags, emphasis) are
-  language-agnostic except where CJK-specific procedures kick in (§10).
-
-  ALWAYS trigger when:
-  (1) Creating a new .md note inside an Obsidian vault
-  (2) Editing an existing .md note in ways that may violate conventions
-      (heading depth, emphasis, tags, sticker, hr placement)
-  (3) Another writing skill triggers inside the vault — this skill is
-      auto-delegated as the convention authority for the output note
-  (4) User asks for "note convention check", "emphasis breakage check",
-      "self-check", "format validation"
-
-  Triggers (Korean):
-  옵시디언, 옵시디언 노트, 노트 작성, 노트 편집, 마크다운 작성, 강조 깨짐,
-  볼드 깨짐, 헤더 규칙, 헤딩, 태그 5축, sticker, 스티커, frontmatter,
-  PARA, vault 컨벤션, 볼트 컨벤션, self-check, 포맷 검증, 노트 검증,
-  의사결정 기록, ADR
-
-  Triggers (English):
-  obsidian, obsidian write, obsidian note, note convention,
-  markdown convention, emphasis breakage, bold breakage, heading rule,
-  tag axis, frontmatter sticker, vault convention, self-check,
-  format validation, PARA method, ADR
-
-  Triggers (Japanese):
-  オブシディアン, ノート作成, マークダウン, 強調が壊れる, 太字が壊れる,
-  見出し, タグ, バルト規約, セルフチェック
-
-  Triggers (Chinese):
-  Obsidian, 笔记写作, 笔记规范, 强调失效, 加粗失效, 标题, 标签,
-  Vault 规范, 自查
-
-  Triggers (Spanish / French / German / Italian):
-  obsidian, nota, convención, énfasis roto, encabezado, etiqueta,
-  obsidienne, gras cassé, en-tête, étiquette,
-  obsidian, hervorhebung gebrochen, überschrift, tag,
-  obsidian, grassetto rotto, intestazione, etichetta
-
-  Do NOT trigger for:
-  - General markdown writing outside an Obsidian vault (this skill is
-    vault-specific)
-  - Interactive visualizations (use a dataviewjs-focused skill)
-  - Review-note authoring itself (polymedia-review-skill owns that workflow;
-    it delegates to this skill for convention enforcement)
-  - Lecture-note authoring itself (knou-note-writer owns that workflow;
-    it delegates to this skill for emphasis-breakage / heading checks)
-  - Logseq · Notion · Bear · plain markdown (each ecosystem has its own
-    conventions; this skill is Obsidian-only)
+  Do NOT trigger for: plain markdown outside an Obsidian vault; interactive
+  dataviewjs visualizations; review-note authoring itself (polymedia-review-skill
+  owns that workflow and delegates here for format only); blog conversion
+  (review-myblog-converter); Logseq / Notion / Bear / plain markdown ecosystems.
 ---
 
 # obsidian-write — Obsidian Vault Writing Convention SSoT
@@ -180,7 +134,9 @@ Deeper hierarchy: use `**bold labels**` inside the body. Don't create h5 / h6.
 
 > This diverges from the CommonMark MD041 lint, but Obsidian is the deployment target — in-vault readability beats portability here.
 
-> **Exception for skill documents**: This skill's own files (`SKILL.md`, `README.md`, `ref/*.md`) use numbered headers (`## 1. Title`) because they're primarily consumed on GitHub where numbered section scanability outweighs Obsidian-outline concerns. The convention applies to *vault notes you write*, not to convention documents that ship to external consumers — `examples/*.md` simulate vault notes and therefore avoid numbered headers themselves.
+> **Exception for skill documents**: This skill's own files (`SKILL.md`, `README.md`, `ref/*.md`) use numbered headers (`## 1. Title`) because they're primarily consumed on GitHub where numbered section scanability outweighs Obsidian-outline concerns. The convention applies to *vault notes you write*, not to convention documents that ship to external consumers.
+>
+> `examples/*.md` are *GitHub markdown documents that embed simulated vault notes inside fenced code blocks*. The outer GitHub document layer uses `# example-xxx.md` (h1) for file titling — fine because it's not a vault note. The embedded simulated vault note (inside the fence) follows the full convention set: h2 start, no numbered headers, etc. When running `scripts/audit-vault.sh` on this repo, expect 1 h1 hit per example file — that's the outer title, not a violation. When auditing your actual vault, this distinction does not apply because vault notes have no such embedding.
 
 ---
 

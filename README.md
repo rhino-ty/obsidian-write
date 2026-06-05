@@ -7,6 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![CJK optimized](https://img.shields.io/badge/CJK-optimized-blue)](#why-cjk-authors-care-the-most)
 [![Languages](https://img.shields.io/badge/Triggers-8%20languages-blueviolet)](#trigger-keywords)
+[![한국어 README](https://img.shields.io/badge/%ED%95%9C%EA%B5%AD%EC%96%B4-README.ko.md-red)](README.ko.md)
 
 ---
 

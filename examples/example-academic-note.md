@@ -128,3 +128,67 @@ The handshake is the **3-message exchange** establishing the connection. Slow-st
 - §11 *Cross-links* — wikilinks to prereq/follow-up lectures and the topic MOC
 
 Stage 1 self-check on this file: zero hits. Pass.
+
+---
+
+## Minimal template to start from
+
+Copy this skeleton to start a new academic note. Replace the angle-bracketed placeholders.
+
+````markdown
+---
+sticker: emoji//1f4d8
+created: <YYYY-MM-DD>
+reviewed: []
+tags:
+  - <domain>          # e.g., cs, math, psychology
+  - <subtopic>        # e.g., networking, statistics, cognitive-science
+  - concept           # or: literature-note / proof / problem-set
+  - review-needed     # initial status
+---
+
+> **Course context**: <prereq lecture, follow-up lecture, where this fits>
+
+## Why this lecture matters
+
+<2–3 sentences. What problem does this lecture's mechanism solve that the previous lecture left open?>
+
+## Glossary
+
+- **<term>** — <definition>
+- **<term>** — <definition>
+
+## <Main mechanism / theorem / procedure>
+
+<derivation, diagram, or stepwise explanation>
+
+## Why this design (not alternatives)
+
+### The naive alternative
+
+<2-message handshake, greedy algorithm, etc. — and why it fails>
+
+### The accepted form
+
+<why the textbook procedure is the way it is — failure modes the naive form has>
+
+## Self-check questions
+
+> Don't write the answers here. Cover the note and try to answer aloud.
+
+1. <conceptual probe>
+2. <edge-case probe>
+3. <alternative-design probe>
+
+## Related notes
+
+- [[<prereq-note>]]
+- [[<follow-up-note>]]
+- [[MOC - <domain>]]
+
+## TODO
+
+- TODO: <fact to verify against primary source>
+- TODO: <follow-up reading>
+````
+

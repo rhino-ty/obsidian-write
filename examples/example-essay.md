@@ -113,3 +113,65 @@ The deeper question — whether the tanking instinct is a strength or a limitati
 Note the deliberate use of *italics* for soft emphasis ("be") instead of bold; emphasis-breakage rules apply to single `*` the same way but here the surrounding whitespace makes it safe.
 
 Stage 1 self-check on this file: zero hits. Pass.
+
+---
+
+## Minimal template to start from
+
+````markdown
+---
+sticker: emoji//1f9e0
+created: <YYYY-MM-DD>
+tags:
+  - essay
+  - <topic-axis>          # e.g., self-analysis, philosophy, taste
+  - meta-learning         # if it's about your own pattern recognition
+---
+
+## What this note is
+
+<1–2 paragraphs. What pattern, observation, or question prompted writing this? Why now?>
+
+## <Evidence: what I notice / what I pick / what I do>
+
+### <Domain 1>
+
+<bullet list or short prose — concrete instances>
+
+### <Domain 2>
+
+<concrete instances from a second domain — cross-domain pattern matters more than within-domain>
+
+## <Reading: why I think this is happening>
+
+### <Hypothesis 1 — frame it as a need or commitment>
+
+<expand. Use blockquote for the deeper insight if there is one.>
+
+### <Hypothesis 2 — alternative reading, possibly less flattering>
+
+<the negative-framing test. If you only wrote positive readings, you're rationalizing.>
+
+## What I'd test against this reading
+
+> If this reading is right, I should also gravitate to:
+> - <prediction 1>
+> - <prediction 2>
+> - <prediction 3>
+
+<verify each against memory. Note which fail.>
+
+## What this changes
+
+<actionable use of the pattern. If "not much", say so honestly.>
+
+## Related
+
+- [[<related-essay>]]
+- [[MOC - self-analysis]]
+
+## ~~<earlier-draft snippet you're preserving>~~
+
+~~<text from a previous framing you've moved past — kept for context, not active>~~
+````
+

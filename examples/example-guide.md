@@ -147,3 +147,70 @@ Future patch likely to nerf Doomfist again; alt picks in the table may shift.
 The currency metadata (`patch` field + "will go stale" notes) is an opinionated extension — not in the SKILL.md core conventions but a useful pattern for time-sensitive reference notes.
 
 Stage 1 self-check on this file: zero hits. Pass.
+
+---
+
+## Minimal template to start from
+
+````markdown
+---
+sticker: emoji//1f3ae
+created: <YYYY-MM-DD>
+<domain-specific currency field>: <value>   # e.g., season: 15, version: "1.4.2", patch: "2026-05-21"
+tags:
+  - guide
+  - <topic>                  # e.g., overwatch, react, cooking
+  - <subtopic>               # e.g., tank, hooks, korean-cuisine
+  - context/<scope>          # e.g., context/season-15  ← signals temporal scoping
+---
+
+> **Scope**: <what this guide covers and what it does NOT cover>. Updated <date>. Will go stale at <event/date> — see the currency field above.
+
+## How to use this guide
+
+<2–3 sentences. How is it structured? What can you skim vs need to read?>
+
+## Quick lookup table
+
+| <category> | <recommendation> | <alternative> | <why> |
+|---|---|---|---|
+| <case 1> | <main pick> | <alt> | <one-line reason> |
+| <case 2> | <main pick> | <alt> | <one-line reason> |
+
+## Per-<unit> breakdown
+
+### <Unit 1>
+
+<one-line geometry / character / situation read>
+
+- **Default**: <pick> — <why this is the default>
+- **Alt**: <alt pick> — <when to switch>
+- **Opening / key moment**: <situational note>
+
+### <Unit 2>
+
+<repeat structure>
+
+## Universal rules
+
+> <unit>-agnostic. Apply after the per-<unit> advice above.
+
+1. <rule>
+2. <rule>
+
+## Counter-pick / fallback triggers
+
+| <signal in the situation> | <switch to> |
+|---|---|
+| <signal> | <action> |
+
+## Currency notes
+
+> <when this guide will need updating; which fields are most volatile>
+
+## Related
+
+- [[<companion-guide>]]
+- [[MOC - <topic>]]
+````
+
