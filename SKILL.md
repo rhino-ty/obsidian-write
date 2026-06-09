@@ -233,10 +233,10 @@ Some vaults adopt a stricter emphasis policy so scanning has reliable visual wei
 | Tier | Marker | Use | Budget |
 |---|---|---|---|
 | L0 | plain | normal prose | 80%+ |
-| **L1 — scanning** | `**bold**` | important content — keywords / one-line conclusions a reader should catch on a skim | 1~3 per paragraph |
-| L2 — crystallization | `==highlight==` | the **core** — the single line that would survive if the section collapsed to one | 0~1 per section |
+| **L1 — scanning** | `**bold**` | important content — not the absolute core, but worth catching on a skim (keywords, one-line conclusions, table cells deserving emphasis) | use as needed — multiple per paragraph is fine when each marks distinct importance; avoid bolding every sentence |
+| L2 — crystallization | `==highlight==` | **must-not-miss points** — the lines a reader would actively suffer for skipping | sparingly — no flooding |
 
-L2 is a luxury good. If you mark every paragraph's takeaway as `==…==`, the hierarchy flattens and the marker stops carrying signal. Reserve it for the one line you'd keep if forced to delete the rest.
+L2 is for content the reader cannot afford to miss. The hard counts above ("sparingly", earlier drafts said "0~1 per section") are guidance, not law — **two in one paragraph is fine** if both are genuine must-not-miss points. The real failure mode is flooding: if **every** paragraph's takeaway is `==highlighted==`, the hierarchy flattens and the marker stops carrying signal. The judgment is qualitative ("would the reader regret missing this?"), not a counter.
 
 **Italic policy**
 
@@ -246,7 +246,7 @@ L2 is a luxury good. If you mark every paragraph's takeaway as `==…==`, the hi
 
 **Boundary cases**
 
-- *Structural bold is exempt from the L1 budget* — `**기출X**:`, `**Q1:**`, `**답: ③**`, table-header bold, callout-internal labels (`> [!TIP] **요점:**`) are pattern markers, not hierarchy emphasis. Don't count them against "1~3 per paragraph". The budget is for *prose* bold.
+- *Structural bold is exempt from the L1 budget* — `**기출X**:`, `**Q1:**`, `**답: ③**`, table-header bold, callout-internal labels (`> [!TIP] **요점:**`) are pattern markers, not hierarchy emphasis. They don't count toward the L1 budget at all. The budget is for *prose* bold.
 - *No nesting between tiers* — `**중요 ==핵심==**` and `==핵심 **강조**==` are both forbidden. The two tiers are mutually exclusive; pick the higher one and drop the inner.
 - *Callout titles minimize emphasis* — the callout itself is already visual separation. `> [!IMPORTANT] **중요**` doubles the signal; just `> [!IMPORTANT] 중요` is enough.
 - *Highlight inside a quote/blockquote* is fine; it's the rare cross-tier marker that survives.
