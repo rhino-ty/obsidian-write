@@ -48,7 +48,7 @@ description: >
 | **Core** (all Obsidian users) | Heading (§3) · Horizontal rule (§4) · Indentation (§5) · Emphasis-breakage rule (§6) | Always in Obsidian |
 | **Recommended** (CJK authors) | CJK-specific emphasis-breakage procedure (§10 + `ref/cjk-language-extra-checks.md`) | Note is written in Korean, Japanese, Chinese, or mixed CJK + Latin |
 | **Recommended** (Make.md or folder emoji users) | Sticker frontmatter (§2) | Make.md plugin or folder-emoji management is in use |
-| **Optional** (your operational policy) | Writing style §1 · 5-axis tags §7 · PARA §8 | Your vault adopts these specific patterns |
+| **Optional** (your operational policy) | Writing style §1 · 5-axis tags §7 · PARA §8 · Two-tier emphasis hierarchy (§6 Optional) | Your vault adopts these specific patterns |
 
 Adopting only the four core items already eliminates almost all Obsidian rendering breakage. The rest is *opinionated* — patterns one user validated in their own vault. Take them if they fit; ignore if not.
 
@@ -224,6 +224,44 @@ Put `**` so that the character immediately inside is a letter. If you need punct
 
 All emphasis delimiters follow the same CommonMark flanking rule. The grep patterns in §10 cover `**`; substitute `=` for `*` in those patterns to also catch `==highlight==` breakage in CJK notes. Highlight-specific grep variants are in `ref/obsidian-syntax-reference.md` §8.
 
+### Optional: Two-tier emphasis hierarchy
+
+Some vaults adopt a stricter emphasis policy so scanning has reliable visual weight. This is **opt-in** — when active, `**bold**` and `==highlight==` form a 2-tier hierarchy, and Korean prose forgoes italic entirely. §10 self-check picks up the extra grep automatically.
+
+**Hierarchy (when enabled)**
+
+| Tier | Marker | Use | Budget |
+|---|---|---|---|
+| L0 | plain | normal prose | 80%+ |
+| **L1 — scanning** | `**bold**` | important content — keywords / one-line conclusions a reader should catch on a skim | 1~3 per paragraph |
+| L2 — crystallization | `==highlight==` | the **core** — the single line that would survive if the section collapsed to one | 0~1 per section |
+
+L2 is a luxury good. If you mark every paragraph's takeaway as `==…==`, the hierarchy flattens and the marker stops carrying signal. Reserve it for the one line you'd keep if forced to delete the rest.
+
+**Italic policy**
+
+- ❌ Korean prose — single `*x*` / `_x_` banned. Korean fonts render italic as a slanted glyph that adds visual noise without semantic gain; the 2-tier hierarchy above covers what italic would have signaled.
+- ✅ English-only italic still allowed — book titles (`*Thinking, Fast and Slow*`), foreign loanwords (`*ad hoc*`, `*de facto*`), deliberate stress inside English-only sentences.
+- Mixed-language sentence with Korean as the matrix language → no italic. Move the English term into bold or backticks instead.
+
+**Boundary cases**
+
+- *Structural bold is exempt from the L1 budget* — `**기출X**:`, `**Q1:**`, `**답: ③**`, table-header bold, callout-internal labels (`> [!TIP] **요점:**`) are pattern markers, not hierarchy emphasis. Don't count them against "1~3 per paragraph". The budget is for *prose* bold.
+- *No nesting between tiers* — `**중요 ==핵심==**` and `==핵심 **강조**==` are both forbidden. The two tiers are mutually exclusive; pick the higher one and drop the inner.
+- *Callout titles minimize emphasis* — the callout itself is already visual separation. `> [!IMPORTANT] **중요**` doubles the signal; just `> [!IMPORTANT] 중요` is enough.
+- *Highlight inside a quote/blockquote* is fine; it's the rare cross-tier marker that survives.
+
+**Activating this policy in a vault**
+
+Add to vault root `CLAUDE.md` (or equivalent agent context file):
+
+```markdown
+## Emphasis policy
+Two-tier hierarchy ON (obsidian-write §6 Optional). Korean italic banned.
+```
+
+Host skills (knou-note-writer, polymedia-review-skill, etc.) that delegate format authority here automatically inherit the policy.
+
 ### Deep-dive
 
 See `ref/emphasis-breakage-deep-dive.md` for:
@@ -323,9 +361,25 @@ done
 
 # (4) Numbered headers (`## 1. Topic` only — does not flag `802.1X` etc.)
 grep -nE '^##+ [0-9]+\. ' $TARGET
+
+# (5) Korean italic — only when Two-tier emphasis hierarchy is ON (see §6 Optional)
+#     Strip **bold** first (so `*` inside `**...**` won't false-flag), then catch any
+#     remaining `*X*` on a line that also contains a Korean character.
+for f in $TARGET; do
+  awk -v file="$f" '
+    /^```/ { in_code = !in_code; next }
+    in_code { next }
+    {
+      line = $0
+      gsub(/\*\*[^*]+\*\*/, "", line)
+      if (line ~ /\*[^*[:space:]][^*]*[^*[:space:]]\*/ && line ~ /[가-힣]/)
+        print file ":" NR ": " $0
+    }
+  ' "$f"
+done
 ```
 
-If Stage 1 returns zero lines, the note has likely passed. Any hits are almost certainly real — fix with §6 patterns immediately.
+If Stage 1 returns zero lines, the note has likely passed. Any hits are almost certainly real — fix with §6 patterns immediately. For check (5), false positives are rare but possible in math/code-adjacent prose (`*x*²` in a sentence about variables); review hits manually and either rewrite or move to a code block.
 
 > ⚠️ For check (3), a naive `grep -nE '^# '` falsely flags `# comment` lines inside Python / Bash code blocks. The awk version tracks the code-block toggle correctly.
 
