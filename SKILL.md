@@ -262,6 +262,47 @@ Two-tier hierarchy ON (obsidian-write §6 Optional). Korean italic banned.
 
 Host skills (knou-note-writer, polymedia-review-skill, etc.) that delegate format authority here automatically inherit the policy.
 
+### Optional: Quantitative highlight budget variant
+
+A further opt-in *on top of* the two-tier hierarchy above. The qualitative
+"would the reader regret missing this?" rule scales with judgment, but exam-prep
+or scan-heavy vaults benefit from a hard count — readers actively skim for
+`==highlights==` as the answer-key layer, so flooding kills the signal fast.
+
+When this variant is active:
+
+| Deepest header in branch | Budget per leaf section |
+|---|---|
+| `#### ` (h4 leaf) | **3 highlights** |
+| `### ` (h3 leaf — no h4 below) | **4 highlights** |
+| `## ` (h2 leaf — no h3, h4 below) | **5 highlights** |
+
+Rule: base **3** at the deepest level, **+1** per shallower step. A shallower section covers more material, so it earns a small budget increase.
+
+**Parent-header lead paragraphs** — when an h2 or h3 has child headers, its own direct body (the lead paragraph before the first child header) gets a **budget of 1** highlight. Enough for a single banner term, not a full takeaway.
+
+**Counting**
+
+- Each `==occurrence==` costs 1 — repeating the same word twice still costs 2.
+- Budget applies per *leaf section* (the deepest header in that branch).
+- Callout-internal highlights count toward the parent section's budget.
+- Structural emphasis (table headers, `**Q1:**`, `**답:**`) is bold-only — highlights have no structural exemption.
+- Front-matter and code fences are not counted.
+
+**Why these numbers**
+
+3 maps to a reader's working-memory chunk for one subsection (a deepest leaf is the smallest navigable unit — usually one concept, one formula, or one pitfall). +1 per shallower step keeps the parent banner usable without inheriting full child budgets. Parent-lead =1 is a banner allowance, not a full takeaway.
+
+**Activation** — replace the two-tier activation line in `CLAUDE.md` with:
+
+```markdown
+## Emphasis policy
+Two-tier hierarchy ON (obsidian-write §6 Optional). Korean italic banned.
+Quantitative highlight budget ON — h4=3 / h3=4 / h2=5, parent-lead=1 (obsidian-write §6 variant).
+```
+
+§10 self-check picks up the per-section counter via `scripts/highlight-budget.sh`.
+
 ### Deep-dive
 
 See `ref/emphasis-breakage-deep-dive.md` for:
