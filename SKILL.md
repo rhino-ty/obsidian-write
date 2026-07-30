@@ -450,29 +450,29 @@ grep -nE '^##+ [0-9]+\. ' $TARGET
 # (5) Korean italic — only when Two-tier emphasis hierarchy is ON (see §6 Optional)
 #     Strip **bold** first (so `*` inside `**...**` won't false-flag), then catch any
 #     remaining `*X*` on a line that also contains a Korean character.
-for f in $TARGET; do
-  awk -v file="$f" '
-    /^```/ { in_code = !in_code; next }
-    in_code { next }
-    {
-      line = $0
-      gsub(/\*\*[^*]+\*\*/, "", line)
-      if (line ~ /\*[^*[:space:]][^*]*[^*[:space:]]\*/ && line ~ /[가-힣]/)
-        print file ":" NR ": " $0
-    }
-  ' "$f"
-done
+perl -CSD -ne '
+  if ($. == 1) { $code = 0 }
+  if (m{^\s*```}) { $code = !$code; close ARGV if eof; next }
+  if ($code) { close ARGV if eof; next }
+  $l = $_; $l =~ s/\*\*[^*]+\*\*//g;
+  print "$ARGV:$.: $_" if $l =~ /\*\S[^*]*\S\*/ && /\p{Hangul}/;
+  close ARGV if eof;
+' $TARGET
 
 # (6) Korean em dash — only when the Korean punctuation policy is ON (see §6 Optional)
-#     Flags `—` / `–` on any line that also contains a Korean character. Code fences excluded.
-for f in $TARGET; do
-  awk -v file="$f" '
-    /^```/ { in_code = !in_code; next }
-    in_code { next }
-    /[—–]/ && /[가-힣]/ { print file ":" NR ": " $0 }
-  ' "$f"
-done
+#     Flags `—` / `–` on any line that also contains a Korean character.
+#     Frontmatter and code fences excluded.
+perl -CSD -ne '
+  if ($. == 1) { $code = 0; $fm = /^---\s*$/ ? 1 : 0; if ($fm) { close ARGV if eof; next } }
+  if ($fm) { $fm = 0 if /^---\s*$/; close ARGV if eof; next }
+  if (m{^\s*```}) { $code = !$code; close ARGV if eof; next }
+  if ($code) { close ARGV if eof; next }
+  print "$ARGV:$.: $_" if /[\x{2014}\x{2013}]/ && /\p{Hangul}/;
+  close ARGV if eof;
+' $TARGET
 ```
+
+> 🚨 **Checks (5) and (6) must not be rewritten in awk.** BSD awk (macOS, `awk version 2020xxxx`) evaluates the bracket range `[가-힣]` **byte-wise**, so it also matches the continuation bytes of unrelated multibyte characters — the em dash `—` (`E2 80 94`) among them. Every line holding a dash, an arrow, or a `·` then tests as "contains Korean" and the check over-reports wildly. GNU awk in a UTF-8 locale is correct, which is exactly why this bug survives review on Linux and only bites macOS users. `perl -CSD` decodes to characters before matching, so `\p{Hangul}` is right on every platform. The `close ARGV if eof` line is equally load-bearing: without it `$.` keeps counting across files, so the `$. == 1` frontmatter test never fires again and the code-fence toggle leaks across file boundaries.
 
 If Stage 1 returns zero lines, the note has likely passed. Any hits are almost certainly real — fix with §6 patterns immediately. For check (5), false positives are rare but possible in math/code-adjacent prose (`*x*²` in a sentence about variables); review hits manually and either rewrite or move to a code block.
 
