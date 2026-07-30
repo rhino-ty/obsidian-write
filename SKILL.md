@@ -3,10 +3,12 @@ name: obsidian-write
 description: >
   Convention SSoT for Obsidian vault note writing — heading depth (h2~h4),
   horizontal-rule placement, tab indentation, CommonMark emphasis-breakage
-  guard, sticker frontmatter, 5-axis tag model, PARA classification, plus
-  post-write grep self-check. CJK-optimized — Korean / Japanese / Chinese
-  particle attachment makes `**bold**` far more fragile than in Latin, and
-  this skill ships a dedicated procedure for it. Other Obsidian writing
+  guard, sticker frontmatter, 5-axis tag model, PARA classification, Korean
+  punctuation policy (em dash ban), plus post-write grep self-check.
+  CJK-optimized — Korean / Japanese / Chinese particle attachment makes
+  `**bold**` far more fragile than in Latin, and Korean prose rejects
+  punctuation English leans on (em dash, en dash, semicolon) while keeping
+  `·`; this skill ships dedicated procedures for both. Other Obsidian writing
   skills delegate convention authority here via vault signal
   `.claude/skills/obsidian-write/SKILL.md`. Output language follows the
   user (Korean request → Korean note). Full rules in SKILL.md, deep-dive
@@ -16,8 +18,8 @@ description: >
   / emphasis-breakage check request; any other Obsidian writing skill firing
   in the vault (auto-delegated).
 
-  Triggers (KO): 옵시디언, 노트 작성, 강조 깨짐, 헤더 규칙, 태그, sticker, PARA, vault 컨벤션, self-check, 의사결정 기록, ADR.
-  Triggers (EN): obsidian, note convention, emphasis breakage, heading rule, tag axis, sticker, vault convention, self-check, PARA, ADR.
+  Triggers (KO): 옵시디언, 노트 작성, 강조 깨짐, 헤더 규칙, 태그, sticker, PARA, vault 컨벤션, self-check, 의사결정 기록, ADR, 엠대쉬, 문장부호, 줄표, 번역문투.
+  Triggers (EN): obsidian, note convention, emphasis breakage, heading rule, tag axis, sticker, vault convention, self-check, PARA, ADR, em dash, punctuation policy.
   Triggers (JA): オブシディアン, ノート作成, 強調が壊れる, 見出し, タグ, セルフチェック.
   Triggers (ZH): Obsidian, 笔记写作, 强调失效, 标题, 标签, 自查.
   Triggers (ES/FR/DE/IT): obsidian + nota/note/Notiz/nota + convención/convention/Konvention/convenzione + énfasis/gras/Hervorhebung/grassetto.
@@ -48,7 +50,7 @@ description: >
 | **Core** (all Obsidian users) | Heading (§3) · Horizontal rule (§4) · Indentation (§5) · Emphasis-breakage rule (§6) | Always in Obsidian |
 | **Recommended** (CJK authors) | CJK-specific emphasis-breakage procedure (§10 + `ref/cjk-language-extra-checks.md`) | Note is written in Korean, Japanese, Chinese, or mixed CJK + Latin |
 | **Recommended** (Make.md or folder emoji users) | Sticker frontmatter (§2) | Make.md plugin or folder-emoji management is in use |
-| **Optional** (your operational policy) | Writing style §1 · 5-axis tags §7 · PARA §8 · Two-tier emphasis hierarchy (§6 Optional) | Your vault adopts these specific patterns |
+| **Optional** (your operational policy) | Writing style §1 · 5-axis tags §7 · PARA §8 · Two-tier emphasis hierarchy (§6 Optional) · Korean punctuation policy (§6 Optional) | Your vault adopts these specific patterns |
 
 Adopting only the four core items already eliminates almost all Obsidian rendering breakage. The rest is *opinionated* — patterns one user validated in their own vault. Take them if they fit; ignore if not.
 
@@ -303,6 +305,48 @@ Quantitative highlight budget ON — h4=3 / h3=4 / h2=5, parent-lead=1 (obsidian
 
 §10 self-check picks up the per-section counter via `scripts/highlight-budget.sh`.
 
+### Optional: Korean punctuation policy (em dash ban)
+
+A third opt-in, sitting next to the italic ban above for the same reason: both are *typography* decisions about Korean prose, not rendering fixes. When this policy is active, the **em dash (`—`) is banned in Korean prose**, along with the en dash (`–`) and the semicolon (`;`). The `·` (가운뎃점) is explicitly *kept* — it is strongly idiomatic Korean and stays in use for enumeration.
+
+**Why**
+
+Korean orthography does include a dash (줄표, `―`), but modern Korean digital writing barely uses it. The deeper reason is sentence structure. English tolerates long compound sentences, so a dash joining two clauses reads naturally. Korean prefers short sentences, so a dash-joined clause runs long and lands as translationese (번역문투). This is why substituting a different mark is only a half fix, and why the last row of the table below is the one that matters.
+
+**Replacements, in order of naturalness**
+
+| What the dash was doing | Korean replacement |
+|---|---|
+| Aside after a complete sentence | **Full stop.** Split into two sentences. This is the default |
+| Label and value | Colon (`**프리징**: 미니언 3~4마리 유지`) |
+| Short parenthetical | Parentheses |
+| Cause / consequence | Arrow (`→`) |
+| Reason, restatement, contrast | **Conjunctive adverb or connective ending** (왜냐하면 · 즉 · 따라서 · 다만 · 반면) |
+
+Swapping one mark for another mark leaves the awkwardness in place: a colon in the position of a post-sentence aside still reads wrong. End the sentence with a full stop and open the next one with a conjunctive adverb. That is the fix that absorbs the dash into grammar instead of relocating it.
+
+**Scope**
+
+- Korean prose only. English-only sentences, bibliographic entries, and quoted source text keep whatever punctuation the source used.
+- Code fences, inline code, math, and frontmatter are out of scope.
+- Metalinguistic mentions are exempt — a line *about* the em dash (like this section's own text) will trip the detector and is an expected hit.
+
+**Retro-conversion warning**
+
+Do not bulk-convert an existing vault by regex. The correct replacement depends on what the dash was doing in that specific sentence, and it varies per occurrence, so a blind substitution produces worse Korean than the dash did. Migrate on touch: apply the policy to new notes and to passages you are already editing, and leave archived notes alone. Filenames containing `—` are a separate and worse case — renaming them breaks every inbound wikilink, so leave them unless you are prepared to fix all referrers.
+
+**Activating this policy in a vault**
+
+Add to vault root `CLAUDE.md` (or equivalent agent context file):
+
+```markdown
+## Punctuation policy
+Korean em dash ban ON (obsidian-write §6 Optional). En dash and semicolon banned too, `·` kept.
+Retro-conversion OFF. New notes and edited passages only.
+```
+
+§10 self-check picks up the detector via `scripts/em-dash-audit.sh`.
+
 ### Deep-dive
 
 See `ref/emphasis-breakage-deep-dive.md` for:
@@ -418,9 +462,21 @@ for f in $TARGET; do
     }
   ' "$f"
 done
+
+# (6) Korean em dash — only when the Korean punctuation policy is ON (see §6 Optional)
+#     Flags `—` / `–` on any line that also contains a Korean character. Code fences excluded.
+for f in $TARGET; do
+  awk -v file="$f" '
+    /^```/ { in_code = !in_code; next }
+    in_code { next }
+    /[—–]/ && /[가-힣]/ { print file ":" NR ": " $0 }
+  ' "$f"
+done
 ```
 
 If Stage 1 returns zero lines, the note has likely passed. Any hits are almost certainly real — fix with §6 patterns immediately. For check (5), false positives are rare but possible in math/code-adjacent prose (`*x*²` in a sentence about variables); review hits manually and either rewrite or move to a code block.
+
+Check (6) has two expected false-positive classes: **metalinguistic lines** (prose *about* the dash) and **quoted or bibliographic source text**, which keeps the punctuation the source used. Everything else is a real hit. Fix per the §6 replacement table — reach for the full stop or the conjunctive adverb, not another mark. `scripts/em-dash-audit.sh` runs this check across a whole tree.
 
 > ⚠️ For check (3), a naive `grep -nE '^# '` falsely flags `# comment` lines inside Python / Bash code blocks. The awk version tracks the code-block toggle correctly.
 

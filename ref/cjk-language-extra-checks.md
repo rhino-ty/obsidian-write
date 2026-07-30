@@ -247,6 +247,76 @@ None of these replace the SKILL.md §6 internalization or this extra CJK procedu
 
 ---
 
-## 8. Acknowledgments
+## 8. Korean punctuation: the em dash problem
+
+Everything above is about markup *breaking*. This section is about markup that renders fine and still reads wrong. It backs SKILL.md §6 "Optional: Korean punctuation policy" and applies only when that policy is active.
+
+### Why the em dash reads as translationese in Korean
+
+Korean orthography does have a dash. 줄표 (`―`, U+2015) is in the 한글 맞춤법 punctuation table, used for insertions and for marking a change of subject. So the objection is not "Korean has no dash." It is that modern Korean digital writing almost never reaches for it, and there is a structural reason.
+
+| | English | Korean |
+|---|---|---|
+| Preferred sentence length | Long compound sentences are idiomatic | Short sentences are idiomatic |
+| Clause joining | Punctuation does it (`—`, `;`, `:`) | Morphology does it (connective endings: `~는데`, `~어서`, `~지만`) |
+| Where the logical connector lives | Between clauses, as a mark | Inside the verb, as an ending, or at the head of the next sentence as an adverb |
+
+English hands clause-joining to punctuation, so a dash is doing real syntactic work. Korean hands it to morphology: the connective ending already encodes reason, contrast, or concession. A dash on top of that is redundant machinery, and because dash-joined clauses run long, the result reads like a translated sentence rather than a written one.
+
+The same argument kills two neighbors:
+
+- **En dash (`–`)** — same visual, same problem, plus most Korean readers cannot distinguish it from `—` or a hyphen at body text size.
+- **Semicolon (`;`)** — effectively absent from Korean punctuation practice. Where English uses `;` to join independent clauses, Korean uses a full stop plus a conjunctive adverb.
+
+And it spares one:
+
+- **가운뎃점 (`·`)** — strongly idiomatic. It is the standard Korean mark for enumerating tight coordinate items (`읽기·쓰기·말하기`). Keep using it. It is not a dash substitute and should not be pressed into that role.
+
+### The half-fix trap
+
+The most common failed migration is mark-for-mark substitution:
+
+```
+❌ 캐시는 빠르다 — 대신 정합성을 잃는다     (dash)
+❌ 캐시는 빠르다: 대신 정합성을 잃는다      (colon — still awkward, this is not a label)
+❌ 캐시는 빠르다 (대신 정합성을 잃는다)     (parens — demotes a coordinate clause to an aside)
+✅ 캐시는 빠르다. 대신 정합성을 잃는다.      (full stop + conjunctive adverb)
+```
+
+A colon is correct only when the left side is a *label*, not a sentence. Parentheses are correct only when the right side is genuinely subordinate. When both sides are coordinate clauses, the answer is two sentences.
+
+### Function-to-grammar map
+
+Diagnose what the dash was doing before replacing it:
+
+| Dash function | Korean grammar that absorbs it |
+|---|---|
+| Reason | `왜냐하면 … 때문이다` · `~라서` · `~기 때문에` |
+| Restatement | `즉` · `다시 말해` · `결국` |
+| Consequence | `그래서` · `따라서` · `→` |
+| Caveat | `다만` · `단` · `~는데` |
+| Contrast | `반면` · `오히려` · `~지만` |
+| Label and value | `:` |
+| Enumeration | `·` |
+
+### Detecting it
+
+```bash
+# Any line with an em/en dash that also contains a Korean character. Code fences excluded.
+awk '/^```/{c=!c;next} !c && /[—–]/ && /[가-힣]/{print FILENAME":"NR": "$0}' note.md
+
+# Whole tree, with per-file counts
+scripts/em-dash-audit.sh -c /path/to/vault
+```
+
+Two false-positive classes are expected and should be left alone: **metalinguistic lines** (prose about the dash, including this document) and **quoted or bibliographic source text**, which preserves the source's punctuation.
+
+### Migrating an existing vault
+
+Don't. Not in bulk, anyway. The replacement is function-dependent, so a regex cannot pick it, and a blind `— ` → `. ` substitution produces sentence fragments and orphaned conjunctions at a rate high enough to make the corpus worse than it started. The workable strategy is **migrate on touch**: the policy applies to new notes and to passages you are already editing for other reasons, and archived notes keep their dashes. Filenames are a stricter no — a filename containing `—` is referenced by every inbound `[[wikilink]]`, and renaming it breaks all of them silently.
+
+---
+
+## 9. Acknowledgments
 
 The CJK fragility was originally documented by Korean Obsidian users on the Korean Markdown Forum and consolidated into the rule set this skill packages. Patterns 4–6 (list items, math, mixed scripts) emerged from actual Korean academic note corpora.
