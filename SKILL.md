@@ -327,9 +327,12 @@ Swapping one mark for another mark leaves the awkwardness in place: a colon in t
 
 **Scope**
 
-- Korean prose only. English-only sentences, bibliographic entries, and quoted source text keep whatever punctuation the source used.
+- Korean prose only. English-only sentences, bibliographic entries, and quoted source text keep whatever punctuation the source used. The scope is **per dash, not per line** — a Korean line may hold an English clause, and a dash inside that clause is fine.
+- **Filenames are in scope.** A Korean note title is Korean prose too. A dash there is judged on the whole stem, not on the dash's immediate neighbours, because a title is one short unit: `회독 1 — CORE (1·2·3·4강)` is a Korean name even though the dash sits between `1` and `CORE`. A genuinely English name like `Design Notes — English Only` passes.
+- **A dash inside a `[[wikilink]]` is a filename reference, not prose.** Rewriting it without renaming the file breaks the link. This is not hypothetical: a bulk conversion that rewrote link text and left filenames alone once broke 387 wikilinks in one vault. Rename the file and update its referrers together, or leave both alone.
 - Code fences, inline code, math, and frontmatter are out of scope.
 - Metalinguistic mentions are exempt — a line *about* the em dash (like this section's own text) will trip the detector and is an expected hit.
+- **ASCII `--` counts as the same violation.** It is the em dash in disguise, and in markdown prose it is not syntax at all — it renders as two literal hyphens. Real `-` runs (horizontal rules, table delimiter rows, CLI flags in code, HTML comments, link targets) are out of scope.
 
 **Retro-conversion warning**
 
@@ -459,15 +462,23 @@ perl -CSD -ne '
   close ARGV if eof;
 ' $TARGET
 
-# (6) Korean em dash — only when the Korean punctuation policy is ON (see §6 Optional)
-#     Flags `—` / `–` on any line that also contains a Korean character.
-#     Frontmatter and code fences excluded.
+# (6) Korean em dash / en dash / ASCII `--` — only when the Korean punctuation
+#     policy is ON (see §6 Optional). Flags a line holding one of them AND a
+#     Korean character. Frontmatter and code fences excluded. The ASCII arm also
+#     skips horizontal rules, table delimiter rows, inline code, HTML comments
+#     and link targets, because in those `-` runs ARE syntax.
 perl -CSD -ne '
   if ($. == 1) { $code = 0; $fm = /^---\s*$/ ? 1 : 0; if ($fm) { close ARGV if eof; next } }
   if ($fm) { $fm = 0 if /^---\s*$/; close ARGV if eof; next }
   if (m{^\s*```}) { $code = !$code; close ARGV if eof; next }
   if ($code) { close ARGV if eof; next }
-  print "$ARGV:$.: $_" if /[\x{2014}\x{2013}]/ && /\p{Hangul}/;
+  my $l = $_;
+  $l =~ s/`[^`]*`//g;        # inline code: --save
+  $l =~ s/<!--.*?-->//g;     # HTML comment
+  $l =~ s/\]\([^)]*\)//g;    # link target
+  my $uni = ($l =~ /[\x{2014}\x{2013}]/) ? 1 : 0;
+  my $asc = ($l !~ /^\s*-{3,}\s*$/ && $l !~ /^\s*\|[\s\-:|]+\|\s*$/ && $l =~ /-{2,}/) ? 1 : 0;
+  print "$ARGV:$.: $_" if ($uni || $asc) && /\p{Hangul}/;
   close ARGV if eof;
 ' $TARGET
 ```
@@ -476,7 +487,9 @@ perl -CSD -ne '
 
 If Stage 1 returns zero lines, the note has likely passed. Any hits are almost certainly real — fix with §6 patterns immediately. For check (5), false positives are rare but possible in math/code-adjacent prose (`*x*²` in a sentence about variables); review hits manually and either rewrite or move to a code block.
 
-Check (6) has two expected false-positive classes: **metalinguistic lines** (prose *about* the dash) and **quoted or bibliographic source text**, which keeps the punctuation the source used. Everything else is a real hit. Fix per the §6 replacement table — reach for the full stop or the conjunctive adverb, not another mark. `scripts/em-dash-audit.sh` runs this check across a whole tree.
+Check (6) has two expected false-positive classes: **metalinguistic lines** (prose *about* the dash) and **quoted or bibliographic source text**, which keeps the punctuation the source used. Everything else is a real hit. Fix per the §6 replacement table — reach for the full stop or the conjunctive adverb, not another mark. The ASCII `--` arm matters most right after a migration: a bulk regex that rewrote `—` as `--` leaves a clean-looking audit and an unchanged sentence, which is the half fix §6 warns about. `scripts/em-dash-audit.sh` runs this check across a whole tree. The inline grep above is line-level and will over-report a Korean line whose dash sits in an English clause; the script judges **per dash** using the nearest token on either side, so prefer it for anything bigger than a spot check.
+
+Tags: `[dash]` / `[ascii]` / `[both]` are real prose violations. `[link]` is a dash inside a `[[wikilink]]`, which is a **filename reference** — reported so it stays visible, but never fix it on its own (see §6 Scope). `[fname]` is a Korean filename holding a dash, judged on the whole stem. Flags: `--no-ascii` · `--no-links` · `--no-fname` · `--only-fname` · `-c`.
 
 > ⚠️ For check (3), a naive `grep -nE '^# '` falsely flags `# comment` lines inside Python / Bash code blocks. The awk version tracks the code-block toggle correctly.
 
