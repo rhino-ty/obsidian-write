@@ -422,9 +422,35 @@ Add this line *inside* the mermaid block to make `NodeName` clickable into a vau
 
 ⚠ This `internal-link` class is **Obsidian-injected** — won't work on github.com or other Mermaid renderers. The diagram still renders; the link just doesn't navigate.
 
-### Supported diagram types (Obsidian 1.5+ uses Mermaid 10.x)
+### Mermaid version and v11 syntax
 
-`graph` / `flowchart` / `sequenceDiagram` / `classDiagram` / `stateDiagram` / `erDiagram` / `gantt` / `pie` / `journey` / `gitGraph` / `mindmap` / `timeline` / `xychart-beta` / `sankey-beta`.
+Obsidian ships its own Mermaid build, so what renders depends on the app version, not on the latest mermaid.js.org docs. As of **Obsidian 1.13.x the bundle is Mermaid 11.13**. Check yours on macOS:
+
+```bash
+grep -ao 'unpkg.com/mermaid@[0-9.]*' "$HOME/Library/Application Support/obsidian/"obsidian-*.asar | head -1
+```
+
+Diagram types: `graph` / `flowchart` / `sequenceDiagram` / `classDiagram` / `stateDiagram` / `erDiagram` / `gantt` / `pie` / `journey` / `gitGraph` / `mindmap` / `timeline` / `quadrantChart` / `xychart-beta` / `sankey-beta` / `block-beta`.
+
+v11 additions that render in Obsidian 1.13:
+
+| Feature | Syntax |
+|---|---|
+| Expanded node shapes (11.3+) | `A@{ shape: docs, label: "Dataset" }` (`doc`, `docs`, `cyl`, `diam`, `stadium`, `flag`, `trap-t`, `hex`, ...) |
+| Edge IDs and animation | `A e1@--> B`, then `e1@{ animate: true }` on its own line |
+| Math in labels (MathML, 10.9+) | `A["$$p(\mathbf{x}\|C_1)$$"]` |
+| Markdown labels | ``A["`**bold** text`"]`` (backticks inside the quotes) |
+| Diagram title | front matter at the top of the block: `---`, `title: ...`, `---` |
+
+Pitfalls seen in practice:
+
+- The `@{ label: "..." }` value is parsed as YAML, so a backslash such as `\mathbf` raises *unknown escape sequence*, and single quotes are rejected by the lexer. Put math on classic-syntax nodes instead: `F{{"$$...$$"}}`, `X(("$$...$$"))`.
+- Obsidian switches Mermaid to its dark theme in dark mode. In flowcharts, a light `classDef` fill needs an explicit text color (`color:#1d1d1f`) to stay readable. `block-beta` ignores `color`, so give it a semi-transparent fill (`fill:#3a78b52e`) and let the theme pick the text color.
+- Not available in 11.13 yet: collapsible subgraphs (11.17+), the `neo` look and ELK as the default layout (v12).
+
+### CJK authors: prefer Mermaid over ASCII box diagrams
+
+CJK characters occupy two columns in a monospace font, so an ASCII box with Korean, Japanese or Chinese labels drifts out of alignment. The usual workaround, English-only labels plus a glossary under the box, makes a CJK note harder to read. Mermaid sizes each node to its label, so CJK text just works, and it adds shapes, color and math on top. Keep ASCII for content that is fixed-width by nature, such as terminal output or a directory tree.
 
 ---
 
