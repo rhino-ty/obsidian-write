@@ -49,7 +49,7 @@ description: >
 |---|---|---|
 | **Core** (all Obsidian users) | Heading (§3) · Horizontal rule (§4) · Indentation (§5) · Emphasis-breakage rule (§6) | Always in Obsidian |
 | **Recommended** (CJK authors) | CJK-specific emphasis-breakage procedure (§10 + `ref/cjk-language-extra-checks.md`) | Note is written in Korean, Japanese, Chinese, or mixed CJK + Latin |
-| **Recommended** (Make.md or folder emoji users) | Sticker frontmatter (§2) | Make.md plugin or folder-emoji management is in use |
+| **Recommended** (icon-plugin users) | Sticker frontmatter (§2) | An icon plugin shows note icons (Make.md reads `sticker` natively, path-keyed plugins like Iconic are generated from it), or you want note icons that survive a plugin switch |
 | **Optional** (your operational policy) | Writing style §1 · 5-axis tags §7 · PARA §8 · Two-tier emphasis hierarchy (§6 Optional) · Korean punctuation policy (§6 Optional) | Your vault adopts these specific patterns |
 
 Adopting only the four core items already eliminates almost all Obsidian rendering breakage. The rest is *opinionated* — patterns one user validated in their own vault. Take them if they fit; ignore if not.
@@ -82,13 +82,13 @@ This skill is convention infrastructure, not a content generator. The convention
 
 ---
 
-## 2. Frontmatter (Sticker / Folder Emoji)
+## 2. Frontmatter (Sticker / Folder Icons)
 
-**Note emoji**: Don't put emoji in the filename. Put it in frontmatter `sticker` using Make.md compatible format:
+**Note icon**: Don't put emoji in the filename. Put it in frontmatter `sticker`:
 
 ```yaml
 ---
-sticker: emoji//{unicode-codepoint(lowercase hex)}
+sticker: emoji//{unicode-codepoint(lowercase hex)}   # or: lucide//{icon-name}
 ---
 ```
 
@@ -101,18 +101,34 @@ Examples:
 - `sticker: emoji//1f3b5` → 🎵 (music)
 - `sticker: emoji//1f9e0` → 🧠 (thinking / essay)
 - `sticker: emoji//1f4d8` → 📘 (academic note)
+- `sticker: lucide//info` → ⓘ (a [Lucide](https://lucide.dev) icon, the set Obsidian ships)
 
-**Folder emoji**: Don't put emoji in the folder name (sync / cross-platform breakage). Use the `.md` file that shares the folder's name (a "folder spec note") and put sticker in its frontmatter:
+Multi-codepoint emoji join their codepoints with `-`: `emoji//1f647-200d-2642-fe0f` → 🙇‍♂️.
 
-```yaml
----
-_filters: []
-sticker: emoji//1f48a
-color: ""
----
-```
+**Why keep `sticker` without Make.md**: the format came from Make.md, but the convention does not depend on it. `sticker` is plain text inside the note, so it survives renames and moves made outside Obsidian (Finder, scripts, git), it survives switching icon plugins, and any tool can read it. One vault moved from Make.md to Iconic by generating Iconic's settings from 674 existing stickers, with nothing re-entered by hand.
 
-The folder spec note doubles as a place to record what the folder is *for* — directory README-style context.
+| Icon plugin | How `sticker` reaches the screen |
+|---|---|
+| **Make.md** | Reads `sticker` natively |
+| **Path-keyed plugins** (Iconic, and others that keep icons in their own settings file) | A small script generates the plugin's settings from `sticker`. `sticker` stays the source, the settings file is derived. Details in `ref/obsidian-plugin-essentials.md` §1 |
+| None | The field is inert text. Nothing breaks |
+
+**Folder icon**: Don't put emoji in the folder name (sync / cross-platform breakage). Where the folder's icon lives depends on the plugin:
+
+- **Plugins that store folder icons themselves** (Iconic and similar): set it in the plugin's UI. No file is needed. This is the default for new vaults.
+- **Make.md**: Make.md keeps a folder's icon in a *folder spec note*, a `.md` with the same name as the folder (`Recipes/Recipes.md`), and writes its own fields into it:
+
+  ```yaml
+  ---
+  _filters: []
+  sticker: emoji//1f48a
+  color: ""
+  ---
+  ```
+
+  `_filters` and `color` belong to Make.md. Don't copy them into notes or templates on any other setup.
+
+**Folder description**: When a folder needs README-style context (what it is *for*, what goes where), write an **overview note** named `{folder} overview.md` in the user's language (`{폴더명} 개요.md` in a Korean vault), and only when there is something to say. Give every overview note the same distinctive sticker (e.g. `lucide//info`) so the file explorer reads it as "about this folder" rather than a second copy of the folder. Without Make.md, a same-name note (`Recipes/Recipes.md`) sits in the explorer as a duplicate of its folder unless a folder-note plugin hides it, which adds a dependency and no information. See `examples/example-folder-overview-note.md`.
 
 ---
 
@@ -407,7 +423,7 @@ Tags are **horizontal metadata** — orthogonal to folders and links.
 
 ## 8. PARA Classification (Optional, separate reference)
 
-If you adopt Tiago Forte's PARA method, this skill's conventions work well with it. The four-folder structure (`1. Projects` / `2. Area` / `3. Resource` / `4. Archives`), the **folder spec note** pattern (a `.md` file with the same name as its folder, holding sticker + context), and the **medium-first Resource layout** (`PARA/3. Resource/{medium}/reviews/{title}.md`) are documented in detail in `ref/para-classification.md` along with PARA-vs-other-systems decision rules, migration tips, and how PARA interacts with the 5-axis tag model.
+If you adopt Tiago Forte's PARA method, this skill's conventions work well with it. The four-folder structure (`1. Projects` / `2. Area` / `3. Resource` / `4. Archives`), the optional **folder overview note** (`{folder} overview.md`, written only when a folder needs context. Make.md users can keep the same-name folder spec note instead), and the **medium-first Resource layout** (`PARA/3. Resource/{medium}/reviews/{title}.md`) are documented in detail in `ref/para-classification.md` along with PARA-vs-other-systems decision rules, migration tips, and how PARA interacts with the 5-axis tag model.
 
 PARA-skippers (Johnny Decimal, LATCH, Bullet Journal, flat folders, topic-driven hierarchies, etc.) can ignore this section entirely — the rest of this skill's conventions (sticker, tags, emphasis, self-check) are layout-agnostic.
 
@@ -539,7 +555,7 @@ Stage 1 all empty → pass. Stage 2 is advisory (high false-positive rate). Stag
 
 This skill's §1–§10 are *convention rules* (when to use what, formatting policy). The *catalog of syntax* that Obsidian adds on top of CommonMark + GFM lives in a separate reference file:
 
-`ref/obsidian-plugin-essentials.md` covers the plugin ecosystem most relevant for this skill — three-tier categorization (Required: Make.md / Dataview; Recommended: Templater / Periodic Notes / Linter / Tasks / Tag Wrangler; Compatible: Excalidraw / Citations / Hover Editor / etc.) with first-time-user-friendly "why install" rationale, a 4-stage progressive rollout plan, and an explicit overlap analysis between Linter and §10 self-check (they complement rather than replace each other — Linter for broad GFM coverage, this skill's grep for CJK-specific emphasis breakage).
+`ref/obsidian-plugin-essentials.md` covers the plugin ecosystem most relevant for this skill — three-tier categorization (Required: an icon plugin such as Iconic or Make.md / Dataview; Recommended: Templater / Periodic Notes / Linter / Tasks / Tag Wrangler; Compatible: Excalidraw / Citations / Hover Editor / etc.) with first-time-user-friendly "why install" rationale, a 4-stage progressive rollout plan, and an explicit overlap analysis between Linter and §10 self-check (they complement rather than replace each other — Linter for broad GFM coverage, this skill's grep for CJK-specific emphasis breakage).
 
 `ref/obsidian-syntax-reference.md` covers:
 - Wikilinks (`[[Note]]`, `[[Note|Display]]`, `[[Note#Heading]]`, `[[Note#^block]]`, same-note links) + disambiguation rules

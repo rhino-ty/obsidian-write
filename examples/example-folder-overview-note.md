@@ -1,6 +1,6 @@
-# example-folder-spec-note.md
+# example-folder-overview-note.md
 
-> A reference folder-spec note — the `.md` file that shares the parent folder's name and documents what the folder is *for*. Imagine this is `PARA/1. Projects/quarter-tracker/quarter-tracker.md`, the spec note inside the `quarter-tracker/` folder. SKILL.md §2 introduces this as the place to put folder emoji and folder-level context.
+> A reference folder overview note — `{folder} overview.md`, the note that documents what a folder is *for*. Imagine this is `PARA/1. Projects/quarter-tracker/quarter-tracker overview.md`, inside the `quarter-tracker/` folder. SKILL.md §2 introduces overview notes. Make.md users keep the same content in the same-name folder spec note instead (see `ref/para-classification.md`).
 
 ---
 
@@ -8,9 +8,7 @@
 
 ````markdown
 ---
-_filters: []
-sticker: emoji//1f4ca
-color: "#3b82f6"
+sticker: lucide//info
 created: 2026-06-05
 tags:
   - project
@@ -89,7 +87,7 @@ I built and abandoned an earlier version in 2025 because I over-engineered the U
 
 ## Conventions applied
 
-- §2 *Frontmatter sticker* — `1f4ca` (📊, bar chart) — domain-appropriate. The `_filters: []` and `color` fields are Make.md plugin extensions for folder appearance; the `deadline` field is an opinionated personal extension for project tracking
+- §2 *Frontmatter sticker* — `lucide//info` (ⓘ), the one sticker every overview note shares, so the file explorer tells it apart from the folder's own icon (which lives in the icon plugin, e.g. 📊 on `quarter-tracker/`). No `_filters` / `color`: those are Make.md fields. The `deadline` field is an opinionated personal extension for project tracking
 - §3 *Heading* — h2 sections (What this folder is, What this project is, Why, Decisions, Stack, Key files, Status, Related), h3 for individual ADRs
 - §4 *Horizontal rule* — none (the h2 structure suffices)
 - §6 *Emphasis* — ADR `**Context**:`, `**Decision**:`, `**Rationale**:`, `**Consequences**:` — colon is *outside* the bold (after `**Context**` not inside). Safe.
@@ -97,11 +95,11 @@ I built and abandoned an earlier version in 2025 because I over-engineered the U
 - §1 *Writing style* — ADR-style decision logging applied throughout the "Decisions" section. Numbered ADRs (ADR-001, ADR-002) are the *one* exception where numbering is OK — ADRs are inherently sequential and the number IS the identifier. (h3 numbering in headers is still avoided because the ADR ID is in the title text, not as a section number.)
 - §11 *Cross-links* — wikilinks to detail notes, MOC, retrospective
 
-### Why folder-spec notes matter
+### Why overview notes matter
 
-Without one, a project folder is opaque. Six months later you don't remember what `quarter-tracker/` even was, why you picked Go, or what the earlier abandoned version was about. The folder-spec note is **the folder's README** — primary source of context for both your future self and any AI agent navigating the vault.
+Without one, a project folder is opaque. Six months later you don't remember what `quarter-tracker/` even was, why you picked Go, or what the earlier abandoned version was about. The overview note is **the folder's README** — primary source of context for both your future self and any AI agent navigating the vault.
 
-It also doubles as the place to attach the folder's `sticker` emoji (Make.md plugin reads it from this file), so you get the same artifact serving two functions.
+This note used to double as the carrier of the folder's icon (Make.md reads it from a same-name folder spec note). With an icon plugin that stores folder icons itself, the icon moves out, and the note only exists when there is context worth writing. A folder with nothing to explain gets no overview.
 
 Stage 1 self-check on this file: zero hits. Pass.
 
@@ -111,9 +109,7 @@ Stage 1 self-check on this file: zero hits. Pass.
 
 ````markdown
 ---
-_filters: []
-sticker: emoji//<hex>     # see SKILL.md §2 for sticker code reference
-color: ""                 # hex like "#3b82f6" if you want Make.md to color the folder
+sticker: lucide//info     # same for every overview note, see SKILL.md §2
 created: <YYYY-MM-DD>
 tags:
   - <project-or-area>

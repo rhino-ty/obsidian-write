@@ -18,7 +18,7 @@
 2. **다른 작성 스킬이 위임한다.** 리뷰 노트 스킬, 강의 노트 스킬, 미래의 옵시디언 작성 스킬 모두 vault에서 `.claude/skills/obsidian-write/SKILL.md` 시그널을 감지하면 컨벤션 권위를 이쪽으로 위임함.
 3. **한국어 작성자가 강조 깨짐을 진짜로 해결한다** — "볼드 조심해서 쓰자"가 아니라 마스터 룰 + 6패턴 + 안전 수정 + grep 검증.
 
-**Opinionated 스킬**이지만 *계층화*돼 있음 — Core는 모든 옵시디언 사용자에게 가치, Recommended는 특정 설정(Make.md·한국어), Optional은 개인 운영 정책(PARA·5축 태그).
+**Opinionated 스킬**이지만 *계층화*돼 있음 — Core는 모든 옵시디언 사용자에게 가치, Recommended는 특정 설정(아이콘 플러그인·한국어), Optional은 개인 운영 정책(PARA·5축 태그).
 
 ## 출력 언어는 사용자 언어를 따름
 
@@ -60,7 +60,7 @@ CommonMark의 flanking 규칙 때문에 `**볼드**`는 구분자 바로 안에 
 - **CJK 강조 깨짐 가드** — 마스터 룰 + 6 패턴 + 안전 수정 + grep 4-pack
 - **위임 인터페이스** — vault 시그널로 다른 작성 스킬 자동 위임
 - **저장 후 self-check** — Stage 1 좁은 grep (고신뢰) + Stage 2 광범 grep (보조) + Stage 3 hr 검증
-- **모범 노트 8개** — 학습 / 수필 / 공략 / 정보성 / MOC / 폴더 스펙 / 데일리 / fix before-after
+- **모범 노트 8개** — 학습 / 수필 / 공략 / 정보성 / MOC / 폴더 개요 / 데일리 / fix before-after
 - **참고 자료** — CommonMark flanking 심화, 파서별 동작, CJK 전용 절차
 
 ## 디렉토리 구조
@@ -82,10 +82,10 @@ obsidian-write/
 │   │                                       프로퍼티(1.4+ 타입), 코멘트, 하이라이트, 수식,
 │   │                                       머메이드, 각주, 태스크 확장 상태, HTML 일부
 │   ├── obsidian-plugin-essentials.md     # 첫 사용자 친화 플러그인 가이드 —
-│   │                                       전제(Make.md/Dataview) / 권장 / 호환 3분류,
+│   │                                       전제(아이콘 플러그인/Dataview) / 권장 / 호환 3분류,
 │   │                                       각 플러그인 "왜 필요한가" + 설치 + 검증 단계,
 │   │                                       AI 안내 패턴(install→verify→confirm), 4단계 도입
-│   ├── para-classification.md            # PARA 방법론 폴더 구조 + 폴더 스펙 노트 + 매체 중심
+│   ├── para-classification.md            # PARA 방법론 폴더 구조 + 폴더 개요 노트 + 매체 중심
 │   │                                       Resource 레이아웃 + 결정 룰 + 마이그레이션
 │   │                                       (SKILL.md §8 분리 ref)
 │   ├── delegation-for-skill-authors.md   # 다른 옵시디언 작성 스킬 개발자용 — 감지 시그널,
@@ -102,7 +102,7 @@ obsidian-write/
 │   ├── example-guide.md                  # 공략/가이드 노트 (예: 게임 공략)
 │   ├── example-tech-reference.md         # 정보성/분석 노트 (예: 논문 정리)
 │   ├── example-moc.md                    # MOC (Map of Content) 인덱스 노트
-│   ├── example-folder-spec-note.md       # 폴더 스펙 노트 (프로젝트/Area의 README 역할)
+│   ├── example-folder-overview-note.md   # 폴더 개요 노트 (프로젝트/Area의 README 역할)
 │   ├── example-daily-note.md             # 데일리 노트 / 저널
 │   └── example-fix-before-after.md       # 깨진 노트 → grep → 수정 전과정 데모
 └── scripts/
@@ -138,7 +138,7 @@ obsidian-write 트리거 (또는 다른 스킬이 이 스킬에 위임)
   ↓
 Core 컨벤션 적용 (헤더 · 구분선 · 들여쓰기 · 강조)
   ↓
-Recommended 적용 (CJK 절차 — 한국어/일본어/중국어 노트면, sticker — Make.md 쓰면)
+Recommended 적용 (한국어/일본어/중국어 노트면 CJK 절차, 아이콘 플러그인을 쓰면 sticker)
   ↓
 Optional 적용 (PARA 경로, 5축 태그, ADR 스타일 — 운영 정책에 맞으면)
   ↓
@@ -212,5 +212,5 @@ MIT. [LICENSE](LICENSE) 참조.
 - **Niklas Luhmann의 Zettelkasten** — 5축 모델의 "태그는 가장 약한 연결" 직관 (§7)
 - **Tiago Forte — PARA Method** — 선택적 폴더 분류 (§8)
 - **Andy Hunt & David Thomas — *The Pragmatic Programmer*** — ADR 스타일 의사결정 기록 정신 (§1)
-- **Make.md 플러그인** — `sticker: emoji//{hex}` frontmatter 규약 (§2)
+- **Make.md 플러그인**: `sticker: emoji//{hex}` frontmatter 형식의 출처 (§2). 이 스킬은 이 형식을 플러그인 중립 규약으로 이어 쓴다
 - **짝꿍 스킬** — [polymedia-review-skill](https://github.com/rhino-ty/polymedia-review-skill) · [review-myblog-converter](https://github.com/rhino-ty/review-myblog-converter)

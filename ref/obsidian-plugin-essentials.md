@@ -11,11 +11,11 @@ Obsidian itself is deliberately minimal — links, search, basic markdown render
 Without plugins:
 - `sticker: emoji//1f48a` in frontmatter is just text — no visual icon
 - `dataview` code blocks in your notes render as literal code
-- Folder spec notes work but folder emoji doesn't appear in the sidebar
+- Folders have no icons in the sidebar
 - The 5-axis tag model still organizes tags, but bulk-renaming a tag is manual file-by-file work
 
 With the right plugins:
-- Sticker emojis render as folder/note icons in the sidebar
+- Stickers render as note icons, and folders get their own icons
 - Frontmatter properties become queryable, sortable, dashboard-able
 - Folder colors and stickers turn a 100+ folder vault from grayscale text walls into scannable visual hierarchy
 - Tag renames propagate across the whole vault in one click
@@ -41,7 +41,7 @@ When this skill recommends a plugin to the user (during onboarding, or when a co
 1. **Explain why** — 1–2 sentences from the plugin's "Why a first-time user might want it" section. Never ask the user to install something without telling them what it solves.
 2. **Walk through install** — the "Install + first 5 minutes" block of the plugin entry.
 3. **Verify it worked** — the "Verify the install worked" block. Run the checks yourself if you have the access; otherwise describe each check and what the user should see.
-4. **Ask for confirmation** — explicitly ask the user to confirm the verification result before proceeding with conventions that depend on the plugin. Example: *"Can you see the Spaces panel on the sidebar now, and does an existing folder's emoji show up when you look at it? Tell me what you see before we adopt the sticker convention."*
+4. **Ask for confirmation** — explicitly ask the user to confirm the verification result before proceeding with conventions that depend on the plugin. Example: *"Does a note that has a `sticker` show its icon in the file explorer now? Tell me what you see before we adopt the sticker convention."*
 
 ### Why the verify step is mandatory, not optional
 
@@ -63,12 +63,12 @@ The verify step + explicit user confirmation is the cheapest insurance against t
 
 These two plugins make this skill's conventions *actually do what they describe*.
 
-### 1. Make.md
+### 1. An icon plugin (Iconic or Make.md)
 
-**What it does in one sentence**: Adds a visual metadata layer to your vault — sticker emojis, colors, and category badges on folders and notes, manageable through a UI sidebar called *Spaces*.
+**What it does in one sentence**: Shows icons (and optionally colors) on notes and folders in the file explorer.
 
 **Why a first-time user might want it**:
-Obsidian's default sidebar is text-only. After 30 folders and 200 notes, it becomes a wall of gray text where you scan-and-skip rather than scan-and-find. Make.md lets you tag folders and notes with emojis and colors, turning the sidebar from text-scanning into icon-scanning. The cognitive load drops dramatically.
+Obsidian's default sidebar is text-only. After 30 folders and 200 notes, it becomes a wall of gray text where you scan-and-skip rather than scan-and-find. Icons turn the sidebar from text-scanning into icon-scanning. The cognitive load drops dramatically.
 
 **Pain it solves**:
 - "Where was that note again?" — visual icons drastically improve recall
@@ -80,16 +80,51 @@ Obsidian's default sidebar is text-only. After 30 folders and 200 notes, it beco
 - Visual learners and people who prefer scanning to searching
 - Vaults with 100+ folders or 500+ notes
 
+**Pick one**:
+
+| | Iconic | Make.md |
+|---|---|---|
+| Scope | Icons and colors only (files, folders, tabs, bookmarks, tags, properties) | All-in-one: icons, colors, its own *Spaces* navigator with its own sort, folder notes, databases |
+| Reads `sticker` | No. Icons live in its own settings (`.obsidian/plugins/iconic/data.json`), keyed by vault path. Generate them from `sticker` (Option A) | Yes, natively |
+| Folder icon lives in | Iconic's settings. Set it from the UI | A folder spec note (`Folder/Folder.md`) holding `_filters` / `sticker` / `color` |
+| Replaces the file explorer | No. Works with the core explorer and sort plugins | Yes (Spaces). Sorting is configured per folder |
+| Pick it when | You want icons without a second navigation system | You want the whole Make.md workflow |
+
+*Iconize* used to be the other common choice. Its author ended maintenance in March 2025, so don't start a new vault on it.
+
 **Relationship with this skill**:
-- **Required for §2** — `sticker: emoji//{hex}` frontmatter only renders as a visual icon when Make.md (or a compatible folder-emoji plugin) is installed. Without it, the field exists in your file but doesn't show up anywhere.
-- **Required for folder spec notes** — the `_filters` and `color` frontmatter fields used in `example-folder-spec-note.md` are Make.md's syntax.
-- Conflict with: none known.
+- **Required for §2 rendering** — without an icon plugin, `sticker` is inert text. Nothing breaks, you just don't see icons.
+- **Folder spec notes and `_filters` / `color` are Make.md only.** On any other setup, set folder icons in the plugin and use §2's overview note when a folder needs written context.
+- Conflict with: don't run two icon plugins at once (Iconic's own docs warn of visual bugs).
+
+#### Option A: Iconic
+
+**Install + first 5 minutes**:
+1. Settings → Community plugins → Browse → "Iconic" → Install → Enable
+2. Right-click any folder → "Change icon" → pick an icon or emoji
+3. Settings → Iconic → turn **off** "Minimal folder icons". When it's on, a folder's collapse arrow is *replaced* by its icon, and once notes carry icons too, folders and files look the same
+
+**Generate Iconic's settings from `sticker`** (keep `sticker` as the source, treat the settings file as derived):
+- Mapping: `emoji//1f4da` → the emoji character itself (codepoints joined), `lucide//book` → `lucide-book`. Write `fileIcons["<vault path>"] = {"icon": ...}` and leave every other key alone
+- **Keys must be NFC.** Obsidian normalizes paths to NFC, but macOS often stores Korean (and other decomposable) filenames as NFD on disk. Keys copied straight from the disk silently match nothing
+- Iconic only renders emoji that are in its bundled list. Some stickers need the variation selector `U+FE0F` added or dropped (❤ vs ❤️), and skin-tone variants are not in the list
+- Folder icons: let Iconic own them (set from the UI). Don't generate them from notes, or a folder's icon ends up depending on a file that exists only to carry it
+- If the settings file is committed to git, sort `fileIcons` the way Iconic's own save does (`Object.entries(...).sort()` compares `"path,[object Object]"` strings by UTF-16 code unit) and serialize like Obsidian (`JSON.stringify(data, undefined, 2)`, no trailing newline). A regenerate with no real change then leaves the file byte-identical
+- Obsidian calls Iconic's `onExternalSettingsChange()` when the settings file changes on disk, so the generator can run with Obsidian open. Just not at the moment you're changing an icon in Iconic's UI
+- Iconic follows renames made inside Obsidian. After renames or moves done outside Obsidian (Finder, scripts, git), re-run the generator
+
+**Verify the install worked**:
+1. Settings → Community plugins → confirm "Iconic" toggle is ON
+2. Right-click a folder → "Change icon" appears
+3. After running the generator, a note with `sticker: emoji//1f48a` shows 💊 in the file explorer, and folders still show their collapse arrows
+
+#### Option B: Make.md
 
 **Install + first 5 minutes**:
 1. Settings → Community plugins → Browse → "Make.md" → Install → Enable
 2. Settings → Make.md → enable "Spaces" (sidebar panel)
 3. Right-click any folder → "Set sticker" → pick an emoji
-4. Make.md auto-creates the folder-spec note (same name as folder) with the sticker frontmatter
+4. Make.md auto-creates the folder spec note (same name as folder) and writes `_filters` / `sticker` / `color` into it
 
 **Verify the install worked**:
 1. Settings → Community plugins → confirm "Make.md" toggle is ON in the *Installed* section
@@ -100,16 +135,19 @@ Obsidian's default sidebar is text-only. After 30 folders and 200 notes, it beco
 If the Spaces panel doesn't appear: Settings → Make.md → enable "Spaces" → reload Obsidian (`Ctrl+R` or full restart).
 If the sticker emoji doesn't render: verify the frontmatter is **exactly** `sticker: emoji//1f48a` (no spaces around `//`, hex in lowercase, no quotes around the value).
 
-**Tell the user**: After walking them through install, ASK explicitly: *"Can you see the Spaces panel in the sidebar? And does the sticker emoji actually render on a note that has the frontmatter?"* Wait for confirmation on both before proceeding to adopt §2 sticker conventions. If only the Spaces panel appears (no sticker render), the user's frontmatter syntax is likely slightly off — walk them through creating a fresh note with the exact syntax to debug.
-
 **Watch out**:
+- The *Spaces* navigator replaces the file explorer and keeps sort settings **per folder** (`.space/def.json`). With "group folders" off, folders and files interleave, and the settings drift folder by folder. A central sort plugin (Custom File Explorer sorting) sorts only the core file explorer, not Spaces
 - Syncthing / iCloud / Dropbox: a `.makemd/` folder appears with `superstate.mdc` and `fileCache.mdc`. These can produce sync conflicts — usually safe to ignore or .gitignore
 - Some themes may render stickers in slightly different positions
 - Make.md has its own command palette (separate from Obsidian's) — worth learning
 
-**Alternatives if you don't want Make.md**:
-- *Folder Notes* + *Iconize* — split functionality across two plugins
-- Manual: skip sticker entirely and don't use that field. The rest of this skill's conventions still work.
+#### Either option
+
+**Tell the user**: ASK explicitly: *"Does a note that has a `sticker` show its icon in the file explorer now? And can you still tell folders from notes?"* Wait for confirmation before adopting §2. If the plugin is on but no icon renders, check the frontmatter syntax first (exactly `sticker: emoji//1f48a`: no spaces around `//`, lowercase hex, no quotes), then for Option A whether the generator ran and whether its keys are NFC.
+
+**Alternatives**:
+- Skip icons entirely and don't use `sticker`. The rest of this skill's conventions still work.
+- Keeping same-name folder notes without Make.md: the *Folder Notes* plugin hides them in the explorer and opens them on folder click. Usually an overview note (§2) is simpler.
 
 ---
 
@@ -328,7 +366,7 @@ The `- [ ] Task` checkbox in standard markdown is static — it sits in whatever
 **Synergy with this skill**:
 - `syntax-reference §12` already documents Tasks' emoji metadata format
 - The extended task states from §12 (`- [/]`, `- [-]`, etc.) are partially Tasks-aware
-- `example-folder-spec-note.md` and project notes benefit from Tasks queries surfacing project todos
+- `example-folder-overview-note.md` and project notes benefit from Tasks queries surfacing project todos
 
 **Install + first 5 minutes**:
 1. Install → Enable
@@ -430,7 +468,7 @@ Pick these when you hit the specific problem each one solves.
 
 **Why you might want it**: MOC navigation becomes much faster — you don't lose context flipping between tabs. The `example-moc.md` workflow especially benefits.
 
-**Relationship**: Synergizes with all wikilink-heavy patterns (MOCs, folder spec notes, examples with cross-references).
+**Relationship**: Synergizes with all wikilink-heavy patterns (MOCs, overview notes, examples with cross-references).
 
 **When to install**: When you find yourself constantly opening and closing notes from MOCs.
 
@@ -490,7 +528,7 @@ A pragmatic 4-stage rollout that gives you value progressively without overwhelm
 
 | Stage | When | Install |
 |---|---|---|
-| **Stage 1 — Day 1** | First open of new vault | Make.md, Dataview |
+| **Stage 1 — Day 1** | First open of new vault | An icon plugin (Iconic or Make.md), Dataview |
 | **Stage 2 — Week 2** | After you have ~20 notes and feel the friction | Templater + Periodic Notes (daily notes only) |
 | **Stage 3 — Month 2** | After your tag list grows past 30, or you start adopting the 5-axis model seriously | Tag Wrangler, Linter |
 | **Stage 4 — As needed** | When the specific pain shows up | Tasks (when you have project lists), Excalidraw (when you start sketching), Citations (when you start academic writing), Hover Editor (when MOC navigation feels slow), etc. |
@@ -509,6 +547,6 @@ A few Obsidian core settings that interact meaningfully with this skill's conven
 
 ## Final note
 
-Plugins are *power*, not *permission*. None of this skill's conventions *require* you to install plugins beyond Make.md and Dataview to deliver value. The other plugins remove friction so the conventions stay sustainable over years, not weeks.
+Plugins are *power*, not *permission*. None of this skill's conventions *require* you to install plugins beyond an icon plugin and Dataview to deliver value. The other plugins remove friction so the conventions stay sustainable over years, not weeks.
 
-If you're a first-time Obsidian user reading this: install Make.md and Dataview, write notes for two weeks using the conventions, *then* come back and pick recommended plugins based on the friction you actually felt. Most "must-have" plugin recommendations on the internet are someone else's friction, not yours.
+If you're a first-time Obsidian user reading this: install an icon plugin and Dataview, write notes for two weeks using the conventions, *then* come back and pick recommended plugins based on the friction you actually felt. Most "must-have" plugin recommendations on the internet are someone else's friction, not yours.

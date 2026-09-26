@@ -52,13 +52,13 @@ Notes graduate frequently:
 
 This is a *feature*, not friction. The PARA insight is that classification by actionability is the only stable axis — topics shift, but "is this currently driving my behavior?" is always answerable.
 
-## Folder spec note
+## Folder overview note
 
-Each Project / Area / Resource folder should have a `.md` file with the **same name as the folder**. This file is the folder's README — it holds the folder's context (what's in here, why), key notes, status, and the folder's sticker emoji.
+When a Project / Area / Resource folder needs context (what's in here and why, key notes, status), write it in an **overview note**: `{folder} overview.md` inside the folder, named in the vault's language (`{폴더명} 개요.md` in a Korean vault). Write one only when there is something to say. An empty overview is noise.
 
 ```
 PARA/1. Projects/quarter-tracker/
-├── quarter-tracker.md          ← folder spec note (this file)
+├── quarter-tracker overview.md   ← overview note (this file)
 ├── architecture.md
 ├── retros/
 │   ├── q1-2026.md
@@ -67,13 +67,9 @@ PARA/1. Projects/quarter-tracker/
     └── adr-001.md
 ```
 
-The folder spec note's frontmatter is where Make.md (or any folder-emoji plugin) reads the sticker from:
-
 ```yaml
 ---
-_filters: []
-sticker: emoji//1f4ca
-color: "#3b82f6"
+sticker: lucide//info
 created: 2026-04-15
 tags:
   - project
@@ -83,11 +79,28 @@ deadline: 2026-09-30
 ---
 ```
 
-A fully worked folder spec note is in `examples/example-folder-spec-note.md`.
+Why these choices:
 
-### Folder spec notes work without Make.md too
+- **Every overview note shares one sticker (`lucide//info`).** The folder already has its own icon in the icon plugin (SKILL.md §2). If the overview carried the same icon, the file explorer would show the folder and a lookalike file right under it.
+- **Not the same name as the folder.** A same-name note sits in the explorer as a duplicate of its folder unless a plugin hides it. `… overview` reads as what it is.
+- **The folder's icon does not live here.** Set it in the icon plugin (`ref/obsidian-plugin-essentials.md` §1).
 
-If you don't install Make.md (see `ref/obsidian-plugin-essentials.md`), the folder spec note still serves as the folder's README. You just don't get the visual sticker rendering. The note itself stays valuable — *future you* (or any AI agent navigating your vault) gets immediate context for what the folder is.
+A fully worked overview note is in `examples/example-folder-overview-note.md`.
+
+### Make.md users: the folder spec note
+
+Make.md stores a folder's icon in a note with the **same name as the folder** (`quarter-tracker/quarter-tracker.md`) and writes its own `_filters` and `color` fields next to `sticker`. On Make.md that note is where the folder's icon and context live, and the Spaces navigator folds it into the folder. The body conventions are the same as an overview note. Without Make.md it still works as a README, you just lose the icon and see it as a separate file.
+
+### Leaving Make.md
+
+1. Move folder icons into the new icon plugin. Keep note `sticker`s as they are and generate the plugin's settings from them (`ref/obsidian-plugin-essentials.md` §1, Option A)
+2. For each folder spec note: if it has a body **or** inbound links, rename it to `{folder} overview.md`, set its sticker to the shared overview icon, and rewrite the links. If it has neither, it only carried the icon. Delete it
+3. Verify links against the pre-migration state, not just "zero broken now". Count broken links before and after with the same checker and compare the lists
+
+One vault did this for 141 folder spec notes: 100 became overviews, 41 were deleted, 148 links were rewritten, and the broken-link list was identical before and after. Two traps it hit:
+
+- **Links inside tables are written `[[Target\|alias]]`.** A matcher that takes everything before `|` reads the target as `Target\` and skips it, and a checker built the same way reports it broken both before and after, so the comparison hides the miss. Strip the trailing backslash in both
+- **Filenames may be NFD on macOS.** Compare names after NFC normalization, and give the renamed file the same normalization form as its folder
 
 ## Medium-first Resource layout
 
@@ -139,7 +152,7 @@ A common new-PARA mistake is duplicating folder-info as tags. Don't tag `#projec
 If your existing vault doesn't use PARA and you want to adopt it:
 
 1. **Don't migrate everything at once.** Create `PARA/` next to your existing structure
-2. Move *one* current project there, write its folder spec note, work in it for a week
+2. Move *one* current project there, write its overview note if it needs one, work in it for a week
 3. If it feels right, move the next project. Otherwise, abandon the migration — PARA isn't for you, and that's fine
 4. Resources and Archives can sit unmigrated for months — they're low-frequency access, no urgency
 
@@ -149,4 +162,4 @@ The point is to validate the *actionability axis* on a small sample before reorg
 
 - Tiago Forte — *Building a Second Brain* (Atria, 2022) — original PARA definition
 - Forte's PARA article: <https://fortelabs.com/blog/para/>
-- This skill's `example-folder-spec-note.md` — a fully worked folder spec note for a project folder
+- This skill's `example-folder-overview-note.md` — a fully worked overview note for a project folder

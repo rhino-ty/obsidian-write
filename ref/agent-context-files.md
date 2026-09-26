@@ -18,7 +18,7 @@ An Obsidian vault is unusual as a project context: it isn't a codebase. It's a p
 - The writing conventions (this skill's §1–§7)
 - Which skills are installed and what they do
 - Which plugins are running and which conventions depend on them
-- The note types that exist (daily, MOC, folder spec, project, etc.)
+- The note types that exist (daily, MOC, folder overview, project, etc.)
 - The owner's voice and style (especially for skills like polymedia-review that mimic user voice)
 
 Without an agent context file, every agent session re-discovers (or fails to discover) this information. With a good agent context file, the agent walks in already calibrated.
@@ -121,9 +121,9 @@ A short table of what's currently live. The agent doesn't need every archive, bu
 
 ```markdown
 ## Active projects
-| Project | Description | Folder spec note |
+| Project | Description | Overview note |
 |---|---|---|
-| Quarter Tracker | personal weekly/quarterly review tool | [[quarter-tracker]] |
+| Quarter Tracker | personal weekly/quarterly review tool | [[quarter-tracker overview]] |
 | ...
 ```
 
@@ -163,7 +163,7 @@ The agent needs to know which plugins drive conventions vs. which are decorative
 
 ```markdown
 ## Active plugins (relevant to writing)
-- Make.md ✅ — sticker frontmatter renders as folder/note icons
+- Iconic ✅ — note icons generated from `sticker` frontmatter, folder icons set in its UI (or: Make.md ✅ — reads `sticker` natively)
 - Dataview ✅ — frontmatter properties are queryable
 - Tag Wrangler ✅ — bulk tag operations enabled
 - Linter ❌ — not installed; obsidian-write §10 grep is the only emphasis check
@@ -290,7 +290,7 @@ For CJK content, also run `ref/cjk-language-extra-checks.md` Check D.
 
 ## Active plugins relevant to writing
 
-- Make.md ✅
+- <icon plugin: Iconic / Make.md> ✅
 - Dataview ✅
 - <other plugins> ✅/❌
 

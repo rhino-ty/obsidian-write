@@ -19,7 +19,7 @@ Every Obsidian note-author re-applies the same set of micro-decisions on every f
 2. **Other writing skills delegate to it.** Review-note skills, lecture-note skills, future writing skills — all defer convention authority here when they detect the vault signal `.claude/skills/obsidian-write/SKILL.md`.
 3. **CJK authors get a real fix for emphasis breakage**, not just "be careful with bold."
 
-It is **opinionated but layered** — Core conventions every Obsidian user benefits from, Recommended layers for specific setups (Make.md, CJK), Optional for personal operational policy (PARA, 5-axis tags).
+It is **opinionated but layered** — Core conventions every Obsidian user benefits from, Recommended layers for specific setups (icon plugins, CJK), Optional for personal operational policy (PARA, 5-axis tags).
 
 ## Output language follows the user
 
@@ -84,7 +84,7 @@ obsidian-write/
 │   │                                       Recommended / Compatible tiers with "why install"
 │   │                                       rationale, 4-stage rollout, Linter ↔ §10 analysis,
 │   │                                       per-plugin verification + AI guidance pattern
-│   ├── para-classification.md            # PARA method folder structure + folder spec note +
+│   ├── para-classification.md            # PARA method folder structure + folder overview note +
 │   │                                       medium-first Resource layout + decision rules +
 │   │                                       migration tips (SKILL.md §8 separate reference)
 │   ├── delegation-for-skill-authors.md   # For other Obsidian writing skill authors —
@@ -131,7 +131,7 @@ obsidian-write triggers (or is delegated to by another skill)
   ↓
 Apply Core conventions (Heading § Horizontal-rule § Indentation § Emphasis)
   ↓
-Apply Recommended where applicable (CJK procedure if Korean/Japanese/Chinese; sticker if Make.md)
+Apply Recommended where applicable (CJK procedure if Korean/Japanese/Chinese; sticker if you run an icon plugin)
   ↓
 Apply Optional per user policy (PARA path, 5-axis tags, ADR-style writing)
   ↓
@@ -180,7 +180,7 @@ Obsidian itself is minimal — most of this skill's value materializes once you'
 
 | Plugin | Tier | Why install | Skill section affected |
 |---|---|---|---|
-| **Make.md** | 🔴 Required | Renders `sticker: emoji//{hex}` as actual icons; folder spec note UI | SKILL.md §2 + folder-spec example |
+| **Icon plugin** (Iconic or Make.md) | 🔴 Required | Renders `sticker` as note icons and gives folders their own icons. Make.md reads `sticker` natively, Iconic through a settings file generated from it | SKILL.md §2 + `ref/obsidian-plugin-essentials.md` §1 |
 | **Dataview** | 🔴 Required | Makes frontmatter properties queryable; powers in-vault dashboards | SKILL.md §5 typed properties |
 | **Templater** | 🟡 Recommended | Automates the `## Minimal template` blocks in `examples/`. Two keystrokes vs. two minutes per new note | All `examples/` |
 | **Periodic Notes** | 🟡 Recommended | Auto-creates daily / weekly / monthly notes by date; enables sustainable journaling | `example-daily-note.md` |
@@ -215,5 +215,5 @@ MIT. See [LICENSE](LICENSE).
 - **Niklas Luhmann's Zettelkasten** — the "tags as the weakest connector" intuition behind the 5-axis model (§7)
 - **Tiago Forte — PARA Method** — the optional folder classification (§8)
 - **Andy Hunt & David Thomas — *The Pragmatic Programmer*** — the ADR-style decision logging spirit (§1)
-- **Make.md plugin** — the `sticker: emoji//{hex}` frontmatter convention (§2)
+- **Make.md plugin** — origin of the `sticker: emoji//{hex}` frontmatter format (§2), which this skill keeps as a plugin-neutral convention
 - **Companion skills** — [polymedia-review-skill](https://github.com/rhino-ty/polymedia-review-skill) · [review-myblog-converter](https://github.com/rhino-ty/review-myblog-converter)
