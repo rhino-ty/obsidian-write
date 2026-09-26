@@ -24,7 +24,7 @@
 # [link] is reported, not suppressed — but it is tagged separately because it is
 # NOT prose. It is a pointer at a file whose name contains a dash, and rewriting
 # it breaks the link. This distinction is load-bearing: a bulk "fix" of these
-# once broke 387 wikilinks across this vault, because the link text changed and
+# once broke 387 wikilinks in one vault, because the link text changed and
 # the filenames did not. Never rewrite a [link] hit on its own. Fix the filename
 # ([fname]) and let the rename update its referrers. Use --no-links to hide them
 # once you have accepted the filenames as-is.
