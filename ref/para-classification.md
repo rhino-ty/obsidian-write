@@ -87,6 +87,36 @@ Why these choices:
 
 A fully worked overview note is in `examples/example-folder-overview-note.md`.
 
+### Overview as a generated index
+
+An overview that lists its folder's notes, each with a one-line summary, is also the vault's index. It does the job `index.md` does in Karpathy's LLM-wiki pattern: a reader (or an agent) learns what is in a folder from one file, without opening every note. Listing the notes counts as "something to say", so such an overview is not an empty one.
+
+Keep the list by script, not by hand. Hand-kept overviews decay: one vault finished a folder-note migration with 30 overviews that had a title and no body. Fence the generated part in a marker block and leave everything outside it as free prose:
+
+```markdown
+<!-- index:start (generated, edit the notes instead) -->
+
+## Notes
+
+- [[note-a]]: one-line summary taken from the note itself
+- [[note-b]]
+
+<!-- index:end -->
+```
+
+Rules that kept this honest:
+
+- **Never edit inside the block.** The next run overwrites it. Fix a summary where it comes from: the note's `description:` field, its first plain blockquote, or its intro paragraph.
+- **Summaries come only from text already in the note.** Do not write new ones. If a candidate contains punctuation your vault bans (the Korean em dash ban, SKILL.md §6) or characters that break when copied (`$`, `#`, `|`), drop it and try the next source.
+- **Put blank lines around the markers.** Otherwise a Linter `heading-blank-lines` pass run by hand rewrites the block, and the generator reports a change on every run.
+- **Write only into overviews that are empty or a few lines of intro.** A hand-written overview is a document. Opt it in by adding the marker pair yourself.
+
+Three traps:
+
+- **Repeated folder names make repeated overview names.** `{folder} overview` is unique only if the folder name is. A vault with one `lecture notes/` folder per course ends up with seven `lecture notes overview.md`, and a bare `[[lecture notes overview]]` could mean any of them. Generated links should carry the path (`[[path/to/lecture notes overview|lecture notes]]`), and so should hand-written links to such notes. Prefixing the parent's name is the other fix.
+- **A filename with leading or trailing whitespace** (`Note .md`) is a link target that tools resolve differently. Rename it, and have the generator warn instead of linking.
+- **Check the result, not only the format.** After generating, count broken links, notes nothing links to, overviews with no body, and duplicate names. A format audit passes while all four are wrong. In the vault above, this check caught a link the generator itself had broken.
+
 ### Make.md users: the folder spec note
 
 Make.md stores a folder's icon in a note with the **same name as the folder** (`quarter-tracker/quarter-tracker.md`) and writes its own `_filters` and `color` fields next to `sticker`. On Make.md that note is where the folder's icon and context live, and the Spaces navigator folds it into the folder. The body conventions are the same as an overview note. Without Make.md it still works as a README, you just lose the icon and see it as a separate file.

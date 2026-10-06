@@ -128,7 +128,7 @@ Multi-codepoint emoji join their codepoints with `-`: `emoji//1f647-200d-2642-fe
 
   `_filters` and `color` belong to Make.md. Don't copy them into notes or templates on any other setup.
 
-**Folder description**: When a folder needs README-style context (what it is *for*, what goes where), write an **overview note** named `{folder} overview.md` in the user's language (`{폴더명} 개요.md` in a Korean vault), and only when there is something to say. Give every overview note the same distinctive sticker (e.g. `lucide//info`) so the file explorer reads it as "about this folder" rather than a second copy of the folder. Without Make.md, a same-name note (`Recipes/Recipes.md`) sits in the explorer as a duplicate of its folder unless a folder-note plugin hides it, which adds a dependency and no information. See `examples/example-folder-overview-note.md`.
+**Folder description**: When a folder needs README-style context (what it is *for*, what goes where), write an **overview note** named `{folder} overview.md` in the user's language (`{폴더명} 개요.md` in a Korean vault), and only when there is something to say (a script-generated list of the folder's notes counts: see `ref/para-classification.md`, "Overview as a generated index"). Give every overview note the same distinctive sticker (e.g. `lucide//info`) so the file explorer reads it as "about this folder" rather than a second copy of the folder. Without Make.md, a same-name note (`Recipes/Recipes.md`) sits in the explorer as a duplicate of its folder unless a folder-note plugin hides it, which adds a dependency and no information. See `examples/example-folder-overview-note.md`.
 
 ---
 
